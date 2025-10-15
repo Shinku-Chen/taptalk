@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗沟通APP - 超大字体测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'SimHei', 'PingFang SC', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .test-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .test-title {
+            font-size: clamp(28px, 6vw, 48px);
+            font-weight: 800;
+            color: #1976d2;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+        
+        .test-description {
+            font-size: clamp(16px, 3vw, 24px);
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+        
+        .font-size-display {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+            color: #1976d2;
+            font-size: clamp(18px, 4vw, 28px);
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .phone-mockup {
+            width: 280px;
+            height: 500px;
+            background: #000;
+            border-radius: 30px;
+            padding: 6px;
+            margin: 0 auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mock-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .mock-sentence {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 2px solid #eee;
+            text-align: center;
+            font-weight: 800;
+            color: #000;
+        }
+        
+        .mock-content {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mock-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .mock-button {
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            letter-spacing: 0.5px;
+        }
+        
+        .mock-button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* 小字体版本 */
+        .small-font .mock-sentence {
+            font-size: 16px;
+        }
+        
+        .small-font .mock-button {
+            font-size: 12px;
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #d32f2f;
+            border: 1px solid #f44336;
+        }
+        
+        /* 中字体版本 */
+        .medium-font .mock-sentence {
+            font-size: 20px;
+        }
+        
+        .medium-font .mock-button {
+            font-size: 16px;
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            color: #e65100;
+            border: 2px solid #ffcc02;
+        }
+        
+        /* 大字体版本 */
+        .large-font .mock-sentence {
+            font-size: 24px;
+        }
+        
+        .large-font .mock-button {
+            font-size: 18px;
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            color: #7b1fa2;
+            border: 2px solid #9c27b0;
+        }
+        
+        /* 超大字体版本 */
+        .xlarge-font .mock-sentence {
+            font-size: 28px;
+            line-height: 1.2;
+        }
+        
+        .xlarge-font .mock-button {
+            font-size: 20px;
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            color: #2e7d32;
+            border: 2px solid #4caf50;
+        }
+        
+        /* 极大字体版本（我们的最终版本）*/
+        .xxlarge-font .mock-sentence {
+            font-size: 32px;
+            line-height: 1.1;
+            letter-spacing: 1px;
+        }
+        
+        .xxlarge-font .mock-button {
+            font-size: 24px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1976d2;
+            border: 3px solid #2196f3;
+        }
+        
+        .live-demo {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.15);
+            margin-top: 40px;
+        }
+        
+        .live-demo h3 {
+            text-align: center;
+            font-size: clamp(24px, 5vw, 36px);
+            color: #1976d2;
+            margin-bottom: 30px;
+            font-weight: 800;
+        }
+        
+        .demo-app {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #000;
+            border-radius: 24px;
+            padding: 6px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        
+        .demo-screen {
+            width: 100%;
+            height: 700px;
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .demo-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: 700;
+        }
+        
+        .demo-sentence-area {
+            background: #f8f9fa;
+            padding: 25px;
+            border-bottom: 3px solid #e0e0e0;
+        }
+        
+        .demo-sentence-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .demo-sentence-text {
+            font-size: clamp(28px, 7vw, 50px);
+            font-weight: 800;
+            color: #000000;
+            flex: 1;
+            margin-right: 20px;
+            line-height: 1.2;
+            letter-spacing: 1px;
+        }
+        
+        .demo-speak-btn {
+            min-width: 90px;
+            height: 70px;
+            background: linear-gradient(135deg, #409eff 0%, #3a8ee6 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: clamp(16px, 4vw, 24px);
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(64, 158, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .demo-speak-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(64, 158, 255, 0.5);
+        }
+        
+        .demo-main {
+            flex: 1;
+            padding: clamp(20px, 5vw, 30px);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        
+        .demo-button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(12px, 4vw, 20px);
+            flex: 1;
+            align-content: center;
+            min-height: 400px;
+        }
+        
+        .demo-grid-button {
+            aspect-ratio: 1;
+            min-height: max(15vh, 120px);
+            max-height: 25vh;
+            border: none;
+            border-radius: 20px;
+            font-size: clamp(24px, 6vw, 48px);
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+        }
+        
+        .demo-grid-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(0,0,0,0.18);
+        }
+        
+        .demo-grid-button:active {
+            transform: translateY(-1px);
+        }
+        
+        .demo-main-btn {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1976d2;
+            border: 3px solid #2196f3;
+        }
+        
+        .demo-main-btn.selected {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            border: 3px solid #1565c0;
+        }
+        
+        .demo-function-btn {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            color: #e65100;
+            border: 3px solid #ff9800;
+        }
+        
+        .demo-function-btn.clear {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #d32f2f;
+            border: 3px solid #f44336;
+        }
+        
+        .size-controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .size-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            margin: 0 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+        
+        .size-btn:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+        }
+        
+        .size-btn.active {
+            background: #d32f2f;
+        }
+        
+        .benefits-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 40px;
+        }
+        
+        .benefits-title {
+            font-size: clamp(24px, 5vw, 32px);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .benefit-item {
+            background: rgba(255,255,255,0.15);
+            padding: 25px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .benefit-item h4 {
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .benefit-item p {
+            font-size: clamp(14px, 3vw, 18px);
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        /* 响应式优化 */
+        @media (max-width: 480px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .phone-mockup {
+                width: 250px;
+                height: 450px;
+            }
+            
+            .demo-grid-button {
+                min-height: max(12vh, 100px);
+                max-height: 20vh;
+                font-size: clamp(20px, 7vw, 40px);
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .demo-grid-button {
+                min-height: max(18vh, 180px);
+                max-height: 35vh;
+                font-size: clamp(32px, 5vw, 52px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1 class="test-title">医疗沟通APP - 超大字体对比测试</h1>
+            <p class="test-description">
+                专为老年人设计的超大字体界面，确保在任何情况下都能清晰阅读
+            </p>
+        </div>
+        
+        <div class="font-size-display" id="fontSizeDisplay">
+            当前按钮字体大小: 24px - 48px (自适应) | 句子字体大小: 28px - 50px (自适应)
+        </div>
+        
+        <!-- 字体大小对比 -->
+        <div class="comparison-grid">
+            <div class="comparison-card">
+                <h3 class="comparison-title">❌ 普通字体 (12-16px)</h3>
+                <div class="phone-mockup">
+                    <div class="phone-screen small-font">
+                        <div class="mock-header">医疗沟通助手</div>
+                        <div class="mock-sentence">我要脱衣服</div>
+                        <div class="mock-content">
+                            <div class="mock-grid">
+                                <button class="mock-button">我</button>
+                                <button class="mock-button">你</button>
+                                <button class="mock-button">他</button>
+                                <button class="mock-button">医生</button>
+                                <button class="mock-button">护士</button>
+                                <button class="mock-button">家人</button>
+                                <button class="mock-button">清空</button>
+                                <button class="mock-button">上页</button>
+                                <button class="mock-button">下页</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 15px; color: #d32f2f; font-weight: 600;">
+                    对老年人来说太小，难以阅读
+                </p>
+            </div>
+            
+            <div class="comparison-card">
+                <h3 class="comparison-title">⚠️ 中等字体 (16-20px)</h3>
+                <div class="phone-mockup">
+                    <div class="phone-screen medium-font">
+                        <div class="mock-header">医疗沟通助手</div>
+                        <div class="mock-sentence">我要脱衣服</div>
+                        <div class="mock-content">
+                            <div class="mock-grid">
+                                <button class="mock-button">我</button>
+                                <button class="mock-button">你</button>
+                                <button class="mock-button">他</button>
+                                <button class="mock-button">医生</button>
+                                <button class="mock-button">护士</button>
+                                <button class="mock-button">家人</button>
+                                <button class="mock-button">清空</button>
+                                <button class="mock-button">上页</button>
+                                <button class="mock-button">下页</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 15px; color: #e65100; font-weight: 600;">
+                    勉强可读，但仍不够理想
+                </p>
+            </div>
+            
+            <div class="comparison-card">
+                <h3 class="comparison-title">✅ 我们的超大字体 (24-48px)</h3>
+                <div class="phone-mockup">
+                    <div class="phone-screen xxlarge-font">
+                        <div class="mock-header">医疗沟通助手</div>
+                        <div class="mock-sentence">我要脱衣服</div>
+                        <div class="mock-content">
+                            <div class="mock-grid">
+                                <button class="mock-button">我</button>
+                                <button class="mock-button">你</button>
+                                <button class="mock-button">他</button>
+                                <button class="mock-button">医生</button>
+                                <button class="mock-button">护士</button>
+                                <button class="mock-button">家人</button>
+                                <button class="mock-button">清空</button>
+                                <button class="mock-button">上页</button>
+                                <button class="mock-button">下页</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 15px; color: #2e7d32; font-weight: 600;">
+                    完美适合老年人，清晰易读
+                </p>
+            </div>
+        </div>
+        
+        <!-- 实时演示 -->
+        <div class="live-demo">
+            <h3>🎯 实时超大字体演示</h3>
+            <p style="text-align: center; margin-bottom: 30px; color: #666; font-size: clamp(16px, 3vw, 20px);">
+                调整浏览器窗口大小，观察字体如何智能缩放，始终保持最大可读性
+            </p>
+            
+            <div class="size-controls">
+                <button class="size-btn active" onclick="setDemoSize('default')">默认尺寸</button>
+                <button class="size-btn" onclick="setDemoSize('small')">小屏模拟</button>
+                <button class="size-btn" onclick="setDemoSize('large')">大屏模拟</button>
+            </div>
+            
+            <div class="demo-app" id="demoApp">
+                <div class="demo-screen">
+                    <div class="demo-header">医疗沟通助手</div>
+                    <div class="demo-sentence-area">
+                        <div class="demo-sentence-container">
+                            <div class="demo-sentence-text">我要脱衣服</div>
+                            <button class="demo-speak-btn">播放</button>
+                        </div>
+                    </div>
+                    <div class="demo-main">
+                        <div class="demo-button-grid">
+                            <button class="demo-grid-button demo-main-btn">我</button>
+                            <button class="demo-grid-button demo-main-btn">你</button>
+                            <button class="demo-grid-button demo-main-btn">他</button>
+                            <button class="demo-grid-button demo-main-btn">医生</button>
+                            <button class="demo-grid-button demo-main-btn">护士</button>
+                            <button class="demo-grid-button demo-main-btn">家人</button>
+                            <button class="demo-grid-button demo-function-btn clear">清空</button>
+                            <button class="demo-grid-button demo-function-btn">上一页</button>
+                            <button class="demo-grid-button demo-function-btn">下一页</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 超大字体的优势 -->
+        <div class="benefits-section">
+            <h3 class="benefits-title">🌟 超大字体设计优势</h3>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <h4>👀 视觉友好</h4>
+                    <p>24-48px字体范围确保老年人在任何光线条件下都能清晰阅读，减少眼部疲劳。</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>🎯 精准点击</h4>
+                    <p>大字体配合大按钮(120-180px)，提供足够的点击区域，降低误操作概率。</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>🧠 认知减负</h4>
+                    <p>清晰的文字降低认知负担，让用户专注于沟通内容而非识别文字。</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>📱 智能缩放</h4>
+                    <p>使用clamp()函数实现智能缩放，在不同设备上都保持最佳可读性。</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>⚡ 快速识别</h4>
+                    <p>800字重 + 0.5px字间距提高文字对比度，实现瞬间识别。</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>♿ 无障碍设计</h4>
+                    <p>符合WCAG AAA级无障碍标准，适合各种视力条件的用户使用。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 技术实现 -->
+        <div style="background: white; border-radius: 20px; padding: 40px; margin-top: 40px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+            <h3 style="color: #1976d2; margin-bottom: 25px; text-align: center; font-size: clamp(24px, 5vw, 32px);">
+                🔧 技术实现细节
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                <div style="background: #f8f9fa; padding: 25px; border-radius: 16px; border-left: 5px solid #1976d2;">
+                    <h4 style="color: #1976d2; margin-bottom: 15px; font-size: 20px;">CSS Clamp函数</h4>
+                    <code style="background: #e3f2fd; padding: 10px; border-radius: 8px; display: block; font-size: 14px; color: #1976d2;">
+                        font-size: clamp(24px, 6vw, 48px);
+                    </code>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">
+                        最小24px，最大48px，基于6%视口宽度动态调整
+                    </p>
+                </div>
+                <div style="background: #f8f9fa; padding: 25px; border-radius: 16px; border-left: 5px solid #4caf50;">
+                    <h4 style="color: #4caf50; margin-bottom: 15px; font-size: 20px;">字体优化</h4>
+                    <ul style="color: #666; line-height: 2;">
+                        <li><strong>字重:</strong> 800 (超粗体)</li>
+                        <li><strong>行高:</strong> 1.1 (紧凑)</li>
+                        <li><strong>字间距:</strong> 0.5px</li>
+                        <li><strong>字体族:</strong> 黑体优先</li>
+                    </ul>
+                </div>
+                <div style="background: #f8f9fa; padding: 25px; border-radius: 16px; border-left: 5px solid #ff9800;">
+                    <h4 style="color: #ff9800; margin-bottom: 15px; font-size: 20px;">按钮尺寸</h4>
+                    <ul style="color: #666; line-height: 2;">
+                        <li><strong>最小高度:</strong> 120px</li>
+                        <li><strong>最大高度:</strong> 25vh</li>
+                        <li><strong>宽高比:</strong> 1:1</li>
+                        <li><strong>边框:</strong> 3px粗边框</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 设置演示尺寸
+        function setDemoSize(size) {
+            const demoApp = document.getElementById('demoApp');
+            const buttons = document.querySelectorAll('.size-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            switch(size) {
+                case 'small':
+                    demoApp.style.maxWidth = '300px';
+                    break;
+                case 'large':
+                    demoApp.style.maxWidth = '500px';
+                    break;
+                default:
+                    demoApp.style.maxWidth = '400px';
+            }
+            
+            demoApp.style.transition = 'all 0.3s ease';
+        }
+        
+        // 按钮交互效果
+        document.querySelectorAll('.demo-main-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.demo-main-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                this.classList.add('selected');
+            });
+        });
+        
+        // 模拟按钮点击效果
+        document.querySelectorAll('.mock-button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+        
+        // 语音按钮效果
+        document.querySelector('.demo-speak-btn').addEventListener('click', function() {
+            this.style.transform = 'scale(0.95)';
+            this.style.background = 'linear-gradient(135deg, #67c23a 0%, #5daf34 100%)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+                this.style.background = 'linear-gradient(135deg, #409eff 0%, #3a8ee6 100%)';
+            }, 200);
+        });
+        
+        // 实时显示字体大小信息
+        function updateFontSizeDisplay() {
+            const button = document.querySelector('.demo-grid-button');
+            const sentence = document.querySelector('.demo-sentence-text');
+            const buttonSize = window.getComputedStyle(button).fontSize;
+            const sentenceSize = window.getComputedStyle(sentence).fontSize;
+            
+            document.getElementById('fontSizeDisplay').innerHTML = 
+                `当前按钮字体: ${buttonSize} | 句子字体: ${sentenceSize} | 窗口宽度: ${window.innerWidth}px`;
+        }
+        
+        window.addEventListener('resize', updateFontSizeDisplay);
+        window.addEventListener('load', updateFontSizeDisplay);
+    </script>
+</body>
+</html>
