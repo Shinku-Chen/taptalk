@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗沟通APP - 合理字体大小演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'SimHei', 'PingFang SC', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .demo-title {
+            font-size: clamp(24px, 5vw, 36px);
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 16px;
+        }
+        
+        .demo-subtitle {
+            font-size: clamp(16px, 3vw, 20px);
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .size-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+            color: #1976d2;
+            font-size: clamp(14px, 3vw, 18px);
+        }
+        
+        .comparison-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .phone-demo {
+            width: 250px;
+            height: 450px;
+            background: #000;
+            border-radius: 25px;
+            padding: 5px;
+            margin: 0 auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .phone-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .phone-sentence {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .phone-content {
+            flex: 1;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .phone-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            flex: 1;
+        }
+        
+        .phone-button {
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            letter-spacing: 0.3px;
+        }
+        
+        .phone-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .phone-speak {
+            background: #409eff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* 修正后的合理尺寸 */
+        .correct-size .phone-sentence-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .correct-size .phone-speak {
+            width: 50px;
+            height: 35px;
+            font-size: 12px;
+        }
+        
+        .correct-size .phone-button {
+            font-size: 14px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1976d2;
+            border: 2px solid #90caf9;
+        }
+        
+        /* 之前过大的版本 */
+        .too-large .phone-sentence-text {
+            font-size: 24px;
+            font-weight: 800;
+            color: #000;
+            flex: 1;
+            margin-right: 10px;
+            line-height: 1.1;
+        }
+        
+        .too-large .phone-speak {
+            width: 60px;
+            height: 40px;
+            font-size: 14px;
+        }
+        
+        .too-large .phone-button {
+            font-size: 18px;
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #d32f2f;
+            border: 2px solid #f44336;
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+            padding: 8px;
+            border-radius: 8px;
+        }
+        
+        .status.good {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .status.bad {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .live-demo {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            margin-top: 40px;
+        }
+        
+        .live-demo h3 {
+            text-align: center;
+            font-size: clamp(20px, 4vw, 28px);
+            color: #1976d2;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+        
+        .app-container {
+            max-width: 380px;
+            margin: 0 auto;
+            background: #000;
+            border-radius: 20px;
+            padding: 4px;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+        }
+        
+        .app-screen {
+            width: 100%;
+            height: 600px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-size: clamp(16px, 4vw, 20px);
+            font-weight: 600;
+        }
+        
+        .sentence-display {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .sentence-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sentence-text {
+            font-size: clamp(22px, 5vw, 36px);
+            font-weight: 700;
+            color: #000000;
+            flex: 1;
+            margin-right: 16px;
+            line-height: 1.3;
+            letter-spacing: 0.5px;
+        }
+        
+        .speak-button {
+            min-width: 70px;
+            height: 50px;
+            background: linear-gradient(135deg, #409eff 0%, #3a8ee6 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: clamp(16px, 3vw, 22px);
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(64, 158, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .speak-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(64, 158, 255, 0.4);
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: clamp(16px, 4vw, 24px);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(10px, 3vw, 16px);
+            flex: 1;
+            align-content: center;
+            min-height: 350px;
+        }
+        
+        .grid-button {
+            aspect-ratio: 1;
+            min-height: max(12vh, 100px);
+            max-height: 20vh;
+            border: none;
+            border-radius: 16px;
+            font-size: clamp(18px, 4vw, 32px);
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            letter-spacing: 0.3px;
+            line-height: 1.2;
+        }
+        
+        .grid-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+        }
+        
+        .grid-button:active {
+            transform: translateY(0);
+        }
+        
+        .main-btn {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1976d2;
+            border: 2px solid #90caf9;
+        }
+        
+        .main-btn.selected {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            border: 2px solid #1565c0;
+        }
+        
+        .function-btn {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            color: #e65100;
+            border: 2px solid #ffcc02;
+        }
+        
+        .function-btn.clear {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #d32f2f;
+            border: 2px solid #f44336;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .control-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin: 0 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            background: #1565c0;
+        }
+        
+        .control-btn.active {
+            background: #4caf50;
+        }
+        
+        .features-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+        
+        .features-title {
+            font-size: clamp(20px, 4vw, 28px);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .feature-item h4 {
+            font-size: clamp(16px, 3vw, 20px);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .feature-item p {
+            font-size: clamp(14px, 2.5vw, 16px);
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+        
+        /* 响应式优化 */
+        @media (max-width: 480px) {
+            .comparison-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .phone-demo {
+                width: 220px;
+                height: 400px;
+            }
+            
+            .grid-button {
+                min-height: max(10vh, 80px);
+                max-height: 16vh;
+                font-size: clamp(16px, 5vw, 28px);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .grid-button {
+                min-height: max(14vh, 120px);
+                max-height: 24vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1 class="demo-title">医疗沟通APP - 合理字体大小演示</h1>
+            <p class="demo-subtitle">
+                修正过大字体问题，找到老年人友好与界面美观的平衡点
+            </p>
+        </div>
+        
+        <div class="size-info" id="sizeInfo">
+            修正后字体范围：按钮 18px-32px | 句子 22px-36px | 窗口宽度: <span id="windowWidth"></span>px
+        </div>
+        
+        <!-- 对比展示 -->
+        <div class="comparison-section">
+            <div class="comparison-card">
+                <h3 class="card-title">❌ 之前版本 (过大)</h3>
+                <div class="phone-demo">
+                    <div class="phone-screen too-large">
+                        <div class="phone-header">医疗沟通助手</div>
+                        <div class="phone-sentence">
+                            <div class="phone-sentence-text">我要脱衣服</div>
+                            <button class="phone-speak">播放</button>
+                        </div>
+                        <div class="phone-content">
+                            <div class="phone-grid">
+                                <button class="phone-button">我</button>
+                                <button class="phone-button">你</button>
+                                <button class="phone-button">他</button>
+                                <button class="phone-button">医生</button>
+                                <button class="phone-button">护士</button>
+                                <button class="phone-button">家人</button>
+                                <button class="phone-button">清空</button>
+                                <button class="phone-button">上页</button>
+                                <button class="phone-button">下页</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status bad">
+                    字体过大，按钮拥挤，界面不协调
+                </div>
+            </div>
+            
+            <div class="comparison-card">
+                <h3 class="card-title">✅ 修正版本 (合理)</h3>
+                <div class="phone-demo">
+                    <div class="phone-screen correct-size">
+                        <div class="phone-header">医疗沟通助手</div>
+                        <div class="phone-sentence">
+                            <div class="phone-sentence-text">我要脱衣服</div>
+                            <button class="phone-speak">播放</button>
+                        </div>
+                        <div class="phone-content">
+                            <div class="phone-grid">
+                                <button class="phone-button">我</button>
+                                <button class="phone-button">你</button>
+                                <button class="phone-button">他</button>
+                                <button class="phone-button">医生</button>
+                                <button class="phone-button">护士</button>
+                                <button class="phone-button">家人</button>
+                                <button class="phone-button">清空</button>
+                                <button class="phone-button">上页</button>
+                                <button class="phone-button">下页</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status good">
+                    字体适中，布局和谐，老年人友好
+                </div>
+            </div>
+        </div>
+        
+        <!-- 实时演示 -->
+        <div class="live-demo">
+            <h3>🎯 修正后的实时演示</h3>
+            <p style="text-align: center; margin-bottom: 20px; color: #666; font-size: clamp(14px, 3vw, 18px);">
+                现在字体大小更加合理，既保证了老年人的可读性，又维持了界面的美观性
+            </p>
+            
+            <div class="controls">
+                <button class="control-btn active" onclick="setSize('default')">默认尺寸</button>
+                <button class="control-btn" onclick="setSize('small')">小屏测试</button>
+                <button class="control-btn" onclick="setSize('large')">大屏测试</button>
+            </div>
+            
+            <div class="app-container" id="appContainer">
+                <div class="app-screen">
+                    <div class="app-header">医疗沟通助手</div>
+                    <div class="sentence-display">
+                        <div class="sentence-container">
+                            <div class="sentence-text">我要脱衣服</div>
+                            <button class="speak-button">播放</button>
+                        </div>
+                    </div>
+                    <div class="main-content">
+                        <div class="button-grid">
+                            <button class="grid-button main-btn">我</button>
+                            <button class="grid-button main-btn">你</button>
+                            <button class="grid-button main-btn">他</button>
+                            <button class="grid-button main-btn">医生</button>
+                            <button class="grid-button main-btn">护士</button>
+                            <button class="grid-button main-btn">家人</button>
+                            <button class="grid-button function-btn clear">清空</button>
+                            <button class="grid-button function-btn">上一页</button>
+                            <button class="grid-button function-btn">下一页</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 优化说明 -->
+        <div class="features-section">
+            <h3 class="features-title">🔧 字体大小优化说明</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h4>📏 合理范围</h4>
+                    <p>按钮文字从24-48px调整为18-32px，句子从28-50px调整为22-36px，更加平衡。</p>
+                </div>
+                <div class="feature-item">
+                    <h4>👀 依然清晰</h4>
+                    <p>最小18px和22px仍然足够老年人清晰阅读，符合无障碍设计标准。</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🎨 界面和谐</h4>
+                    <p>字体与按钮尺寸比例协调，避免了文字过大导致的拥挤感。</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📱 智能缩放</h4>
+                    <p>继续使用clamp()函数，在不同屏幕上都能自适应到最佳大小。</p>
+                </div>
+                <div class="feature-item">
+                    <h4>⚡ 响应灵敏</h4>
+                    <p>基于4-5%视口宽度缩放，响应更加平滑自然。</p>
+                </div>
+                <div class="feature-item">
+                    <h4>✨ 用户友好</h4>
+                    <p>在保证可读性的前提下，提供更好的视觉体验和操作舒适度。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 技术细节 -->
+        <div style="background: white; border-radius: 16px; padding: 30px; margin-top: 40px; box-shadow: 0 6px 24px rgba(0,0,0,0.1);">
+            <h3 style="color: #1976d2; margin-bottom: 20px; text-align: center; font-size: clamp(20px, 4vw, 28px);">
+                📊 修正前后对比
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 4px solid #d32f2f;">
+                    <h4 style="color: #d32f2f; margin-bottom: 12px;">修正前 (过大)</h4>
+                    <ul style="color: #666; line-height: 1.8;">
+                        <li>按钮：24px - 48px</li>
+                        <li>句子：28px - 50px</li>
+                        <li>字重：800 (过粗)</li>
+                        <li>问题：拥挤、不协调</li>
+                    </ul>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 4px solid #4caf50;">
+                    <h4 style="color: #4caf50; margin-bottom: 12px;">修正后 (合理)</h4>
+                    <ul style="color: #666; line-height: 1.8;">
+                        <li>按钮：18px - 32px</li>
+                        <li>句子：22px - 36px</li>
+                        <li>字重：700 (适中)</li>
+                        <li>优势：平衡、和谐</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 设置演示尺寸
+        function setSize(size) {
+            const container = document.getElementById('appContainer');
+            const buttons = document.querySelectorAll('.control-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            switch(size) {
+                case 'small':
+                    container.style.maxWidth = '320px';
+                    break;
+                case 'large':
+                    container.style.maxWidth = '480px';
+                    break;
+                default:
+                    container.style.maxWidth = '380px';
+            }
+            
+            container.style.transition = 'all 0.3s ease';
+            updateSizeInfo();
+        }
+        
+        // 更新尺寸信息
+        function updateSizeInfo() {
+            const width = window.innerWidth;
+            document.getElementById('windowWidth').textContent = width;
+        }
+        
+        // 按钮交互
+        document.querySelectorAll('.main-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.main-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                this.classList.add('selected');
+            });
+        });
+        
+        // 模拟按钮点击
+        document.querySelectorAll('.phone-button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+        
+        // 语音按钮效果
+        document.querySelectorAll('.speak-button, .phone-speak').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+        
+        // 初始化
+        window.addEventListener('load', updateSizeInfo);
+        window.addEventListener('resize', updateSizeInfo);
+    </script>
+</body>
+</html>

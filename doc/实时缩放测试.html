@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗沟通APP - 实时缩放测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'SimHei', 'PingFang SC', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 16px;
+        }
+        
+        .size-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            color: #1976d2;
+            font-size: 16px;
+        }
+        
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .control-group {
+            margin: 15px 0;
+        }
+        
+        .control-label {
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+            margin-right: 10px;
+            font-weight: 600;
+        }
+        
+        .width-slider {
+            width: 300px;
+            margin: 0 10px;
+        }
+        
+        .resize-buttons {
+            margin-top: 15px;
+        }
+        
+        .resize-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .resize-btn:hover {
+            background: #1565c0;
+        }
+        
+        .app-container {
+            margin: 0 auto;
+            background: #000;
+            border-radius: 20px;
+            padding: 4px;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            width: 400px;
+        }
+        
+        .app-screen {
+            width: 100%;
+            height: 600px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .sentence-display {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .sentence-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sentence-text {
+            flex: 1;
+            margin-right: 16px;
+            line-height: 1.3;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            color: #000000;
+            transition: font-size 0.2s ease;
+        }
+        
+        .speak-button {
+            min-width: 70px;
+            height: 50px;
+            background: linear-gradient(135deg, #409eff 0%, #3a8ee6 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(64, 158, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .speak-button:hover {
+            transform: translateY(-1px);
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            flex: 1;
+            align-content: center;
+            min-height: 350px;
+        }
+        
+        .grid-button {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            letter-spacing: 0.3px;
+            line-height: 1.2;
+        }
+        
+        .grid-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+        }
+        
+        .main-btn {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1976d2;
+            border: 2px solid #90caf9;
+        }
+        
+        .main-btn.selected {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            border: 2px solid #1565c0;
+        }
+        
+        .function-btn {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            color: #e65100;
+            border: 2px solid #ffcc02;
+        }
+        
+        .function-btn.clear {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #d32f2f;
+            border: 2px solid #f44336;
+        }
+        
+        /* 实时响应式字体大小 */
+        @media (max-width: 320px) {
+            .button-text-large { font-size: 18px !important; }
+            .sentence-text { font-size: 22px !important; }
+            .grid-button { min-height: 80px; max-height: 120px; }
+        }
+        
+        @media (min-width: 321px) and (max-width: 375px) {
+            .button-text-large { font-size: 20px !important; }
+            .sentence-text { font-size: 24px !important; }
+            .grid-button { min-height: 85px; max-height: 130px; }
+        }
+        
+        @media (min-width: 376px) and (max-width: 414px) {
+            .button-text-large { font-size: 22px !important; }
+            .sentence-text { font-size: 26px !important; }
+            .grid-button { min-height: 90px; max-height: 140px; }
+        }
+        
+        @media (min-width: 415px) and (max-width: 480px) {
+            .button-text-large { font-size: 24px !important; }
+            .sentence-text { font-size: 28px !important; }
+            .grid-button { min-height: 95px; max-height: 150px; }
+        }
+        
+        @media (min-width: 481px) and (max-width: 768px) {
+            .button-text-large { font-size: 26px !important; }
+            .sentence-text { font-size: 30px !important; }
+            .grid-button { min-height: 100px; max-height: 160px; }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .button-text-large { font-size: 28px !important; }
+            .sentence-text { font-size: 32px !important; }
+            .grid-button { min-height: 110px; max-height: 170px; }
+        }
+        
+        @media (min-width: 1025px) {
+            .button-text-large { font-size: 32px !important; }
+            .sentence-text { font-size: 36px !important; }
+            .grid-button { min-height: 120px; max-height: 180px; }
+        }
+        
+        .debug-info {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        
+        .debug-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .debug-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .debug-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .debug-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .debug-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1 class="test-title">实时缩放测试 - 拖拽改变窗口大小观察效果</h1>
+        </div>
+        
+        <div class="size-info" id="sizeInfo">
+            当前窗口宽度: <span id="windowWidth"></span>px | 
+            按钮字体: <span id="buttonFontSize"></span>px | 
+            句子字体: <span id="sentenceFontSize"></span>px
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label class="control-label">容器宽度:</label>
+                <input type="range" class="width-slider" id="widthSlider" min="280" max="800" value="400">
+                <span id="widthValue">400px</span>
+            </div>
+            
+            <div class="resize-buttons">
+                <button class="resize-btn" onclick="setContainerWidth(320)">小屏 (320px)</button>
+                <button class="resize-btn" onclick="setContainerWidth(375)">iPhone (375px)</button>
+                <button class="resize-btn" onclick="setContainerWidth(414)">大屏手机 (414px)</button>
+                <button class="resize-btn" onclick="setContainerWidth(768)">平板 (768px)</button>
+                <button class="resize-btn" onclick="setContainerWidth(400)">重置</button>
+            </div>
+        </div>
+        
+        <div class="app-container" id="appContainer">
+            <div class="app-screen">
+                <div class="app-header">医疗沟通助手</div>
+                <div class="sentence-display">
+                    <div class="sentence-container">
+                        <div class="sentence-text" id="sentenceText">我要脱衣服</div>
+                        <button class="speak-button">播放</button>
+                    </div>
+                </div>
+                <div class="main-content">
+                    <div class="button-grid">
+                        <button class="grid-button main-btn button-text-large">我</button>
+                        <button class="grid-button main-btn button-text-large">你</button>
+                        <button class="grid-button main-btn button-text-large">他</button>
+                        <button class="grid-button main-btn button-text-large">医生</button>
+                        <button class="grid-button main-btn button-text-large">护士</button>
+                        <button class="grid-button main-btn button-text-large">家人</button>
+                        <button class="grid-button function-btn clear button-text-large">清空</button>
+                        <button class="grid-button function-btn button-text-large">上一页</button>
+                        <button class="grid-button function-btn button-text-large">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="debug-info">
+            <h3 class="debug-title">实时调试信息</h3>
+            <div class="debug-grid">
+                <div class="debug-item">
+                    <div class="debug-label">窗口宽度</div>
+                    <div class="debug-value" id="debugWindowWidth">-</div>
+                </div>
+                <div class="debug-item">
+                    <div class="debug-label">容器宽度</div>
+                    <div class="debug-value" id="debugContainerWidth">-</div>
+                </div>
+                <div class="debug-item">
+                    <div class="debug-label">按钮字体大小</div>
+                    <div class="debug-value" id="debugButtonFont">-</div>
+                </div>
+                <div class="debug-item">
+                    <div class="debug-label">句子字体大小</div>
+                    <div class="debug-value" id="debugSentenceFont">-</div>
+                </div>
+                <div class="debug-item">
+                    <div class="debug-label">按钮高度</div>
+                    <div class="debug-value" id="debugButtonHeight">-</div>
+                </div>
+                <div class="debug-item">
+                    <div class="debug-label">活跃媒体查询</div>
+                    <div class="debug-value" id="debugMediaQuery">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const appContainer = document.getElementById('appContainer');
+        const widthSlider = document.getElementById('widthSlider');
+        const widthValue = document.getElementById('widthValue');
+        const sentenceText = document.getElementById('sentenceText');
+        
+        // 设置容器宽度
+        function setContainerWidth(width) {
+            appContainer.style.width = width + 'px';
+            widthSlider.value = width;
+            widthValue.textContent = width + 'px';
+            updateDebugInfo();
+        }
+        
+        // 滑块控制
+        widthSlider.addEventListener('input', function() {
+            const width = this.value;
+            setContainerWidth(width);
+        });
+        
+        // 更新调试信息
+        function updateDebugInfo() {
+            const windowWidth = window.innerWidth;
+            const containerWidth = appContainer.offsetWidth;
+            
+            // 获取计算后的字体大小
+            const buttonElement = document.querySelector('.button-text-large');
+            const sentenceElement = document.getElementById('sentenceText');
+            const buttonFontSize = window.getComputedStyle(buttonElement).fontSize;
+            const sentenceFontSize = window.getComputedStyle(sentenceElement).fontSize;
+            const buttonHeight = buttonElement.offsetHeight;
+            
+            // 检测当前活跃的媒体查询
+            let activeMediaQuery = '默认';
+            if (windowWidth <= 320) activeMediaQuery = '≤320px';
+            else if (windowWidth <= 375) activeMediaQuery = '321-375px';
+            else if (windowWidth <= 414) activeMediaQuery = '376-414px';
+            else if (windowWidth <= 480) activeMediaQuery = '415-480px';
+            else if (windowWidth <= 768) activeMediaQuery = '481-768px';
+            else if (windowWidth <= 1024) activeMediaQuery = '769-1024px';
+            else activeMediaQuery = '≥1025px';
+            
+            // 更新显示
+            document.getElementById('windowWidth').textContent = windowWidth;
+            document.getElementById('buttonFontSize').textContent = parseInt(buttonFontSize);
+            document.getElementById('sentenceFontSize').textContent = parseInt(sentenceFontSize);
+            
+            document.getElementById('debugWindowWidth').textContent = windowWidth + 'px';
+            document.getElementById('debugContainerWidth').textContent = containerWidth + 'px';
+            document.getElementById('debugButtonFont').textContent = buttonFontSize;
+            document.getElementById('debugSentenceFont').textContent = sentenceFontSize;
+            document.getElementById('debugButtonHeight').textContent = buttonHeight + 'px';
+            document.getElementById('debugMediaQuery').textContent = activeMediaQuery;
+        }
+        
+        // 按钮交互
+        document.querySelectorAll('.main-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.main-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                this.classList.add('selected');
+            });
+        });
+        
+        // 语音按钮效果
+        document.querySelector('.speak-button').addEventListener('click', function() {
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+        });
+        
+        // 监听窗口大小变化
+        window.addEventListener('resize', updateDebugInfo);
+        window.addEventListener('load', updateDebugInfo);
+        
+        // 定时更新（确保实时性）
+        setInterval(updateDebugInfo, 100);
+        
+        // 初始化
+        updateDebugInfo();
+    </script>
+</body>
+</html>

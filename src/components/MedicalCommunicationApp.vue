@@ -435,13 +435,16 @@ export default {
 }
 
 .sentence-text {
-  font-size: clamp(28px, 7vw, 50px);
-  font-weight: 800;
+  font-size: clamp(22px, 5vw, 36px);
+  font-weight: 700;
   color: #000000;
   flex: 1;
   margin-right: 16px;
-  line-height: 1.2;
-  letter-spacing: 1px;
+  line-height: 1.3;
+  letter-spacing: 0.5px;
+  /* 备用方案 */
+  font-size: 5vw;
+  font-size: min(max(22px, 5vw), 36px);
 }
 
 .speak-button {
@@ -452,9 +455,9 @@ export default {
 }
 
 .speak-text {
-  font-size: clamp(18px, 4vw, 28px);
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-size: clamp(16px, 3vw, 22px);
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .history-section {
@@ -500,8 +503,8 @@ export default {
 
 .grid-item {
   aspect-ratio: 1;
-  min-height: max(15vh, 120px);
-  max-height: 25vh;
+  min-height: max(12vh, 100px);
+  max-height: 20vh;
 }
 
 .grid-button {
@@ -531,12 +534,15 @@ export default {
 }
 
 .button-text-large {
-  font-size: clamp(24px, 6vw, 48px);
-  font-weight: 800;
+  font-size: clamp(18px, 4vw, 32px);
+  font-weight: 700;
   text-align: center;
-  line-height: 1.1;
+  line-height: 1.2;
   color: inherit;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+  /* 备用方案 */
+  font-size: 4vw;
+  font-size: min(max(18px, 4vw), 32px);
 }
 
 .bottom-indicator {
@@ -550,53 +556,123 @@ export default {
 }
 
 /* 响应式设计 */
-@media (max-width: 480px) {
-  .main-content {
-    padding: 3vw;
+@media (max-width: 320px) {
+  .button-text-large {
+    font-size: 18px !important;
+  }
+  
+  .sentence-text {
+    font-size: 22px !important;
   }
   
   .grid-item {
-    min-height: max(12vh, 100px);
-    max-height: 18vh;
+    min-height: 80px;
+    max-height: 120px;
+  }
+}
+
+@media (min-width: 321px) and (max-width: 375px) {
+  .button-text-large {
+    font-size: 20px !important;
   }
   
-  .button-grid {
-    min-height: 350px;
+  .sentence-text {
+    font-size: 24px !important;
+  }
+  
+  .grid-item {
+    min-height: 85px;
+    max-height: 130px;
+  }
+}
+
+@media (min-width: 376px) and (max-width: 414px) {
+  .button-text-large {
+    font-size: 22px !important;
+  }
+  
+  .sentence-text {
+    font-size: 26px !important;
+  }
+  
+  .grid-item {
+    min-height: 90px;
+    max-height: 140px;
+  }
+}
+
+@media (min-width: 415px) and (max-width: 480px) {
+  .button-text-large {
+    font-size: 24px !important;
+  }
+  
+  .sentence-text {
+    font-size: 28px !important;
+  }
+  
+  .grid-item {
+    min-height: 95px;
+    max-height: 150px;
   }
 }
 
 @media (min-width: 481px) and (max-width: 768px) {
+  .button-text-large {
+    font-size: 26px !important;
+  }
+  
+  .sentence-text {
+    font-size: 30px !important;
+  }
+  
   .grid-item {
-    min-height: max(14vh, 110px);
-    max-height: 22vh;
+    min-height: 100px;
+    max-height: 160px;
   }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 769px) and (max-width: 1024px) {
+  .button-text-large {
+    font-size: 28px !important;
+  }
+  
+  .sentence-text {
+    font-size: 32px !important;
+  }
+  
   .grid-item {
-    min-height: max(15vh, 130px);
-    max-height: 26vh;
+    min-height: 110px;
+    max-height: 170px;
   }
 }
 
-@media (min-height: 900px) {
-  .grid-item {
-    min-height: max(16vh, 150px);
-    max-height: 30vh;
+@media (min-width: 1025px) {
+  .button-text-large {
+    font-size: 32px !important;
   }
-}
-
-@media (min-height: 1200px) {
+  
+  .sentence-text {
+    font-size: 36px !important;
+  }
+  
   .grid-item {
-    min-height: max(18vh, 180px);
-    max-height: 35vh;
+    min-height: 120px;
+    max-height: 180px;
   }
 }
 
 @media (orientation: landscape) and (max-height: 600px) {
   .grid-item {
-    min-height: max(18vh, 100px);
-    max-height: 25vh;
+    min-height: 70px;
+    max-height: 100px;
+  }
+  
+  .button-text-large {
+    font-size: 18px !important;
+  }
+  
+  .sentence-text {
+    font-size: 20px !important;
   }
   
   .main-content {
@@ -630,3 +706,4 @@ export default {
   }
 }
 </style>
+
