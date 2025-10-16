@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗沟通助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            font-family: 'Microsoft YaHei', 'SimHei', 'PingFang SC', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            overflow: hidden;
+        }
+        
+        .medical-app {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+        
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: clamp(14px, 3vw, 16px);
+            font-weight: 600;
+            transition: all 0.2s ease;
+            min-width: 80px;
+        }
+        
+        .back-btn:hover:not(:disabled) {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+        
+        .back-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .header-title {
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: 700;
+        }
+        
+        .sentence-display {
+            background: #f8f9fa;
+            padding: clamp(20px, 5vw, 30px);
+            border-bottom: 3px solid #e0e0e0;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sentence-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .sentence-text {
+            flex: 1;
+            margin-right: 20px;
+            line-height: 1.2;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            color: #000000;
+            font-size: clamp(20px, 6vw, 48px);
+            transition: all 0.3s ease;
+        }
+        
+        .speak-button {
+            min-width: clamp(80px, 18vw, 120px);
+            height: clamp(50px, 12vw, 80px);
+            background: linear-gradient(135deg, #409eff 0%, #3a8ee6 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(64, 158, 255, 0.3);
+            transition: all 0.3s ease;
+            font-size: clamp(16px, 4vw, 24px);
+        }
+        
+        .speak-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(64, 158, 255, 0.4);
+        }
+        
+        .speak-button.completed {
+            background: linear-gradient(135deg, #67c23a 0%, #5daf34 100%);
+            animation: speakPulse 0.6s ease-out;
+        }
+        
+        @keyframes speakPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: clamp(15px, 4vw, 25px);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(10px, 3vw, 20px);
+            flex: 1;
+            align-content: center;
+            width: 100%;
+            max-width: min(95vw, 800px);
+            margin: 0 auto;
+        }
+        
+        .grid-button {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: clamp(12px, 3vw, 20px);
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            letter-spacing: 0.3px;
+            line-height: 1.1;
+            font-size: clamp(14px, 4.5vw, 32px);
+            min-height: clamp(60px, 15vw, 150px);
+        }
+        
+        .grid-button:hover:not(:disabled):not(.disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .main-btn {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1976d2;
+            border: 3px solid #90caf9;
+        }
+        
+        .main-btn.selected {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            border: 3px solid #1565c0;
+        }
+        
+        .function-btn {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            color: #e65100;
+            border: 3px solid #ffcc02;
+        }
+        
+        .function-btn.clear {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #d32f2f;
+            border: 3px solid #f44336;
+        }
+        
+        .function-btn:disabled,
+        .function-btn.disabled {
+            background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%) !important;
+            color: #bdbdbd !important;
+            border: 3px solid #e0e0e0 !important;
+            cursor: not-allowed !important;
+            opacity: 0.6 !important;
+        }
+        
+        .bottom-indicator {
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .step-dot {
+            width: clamp(12px, 3vw, 16px);
+            height: clamp(12px, 3vw, 16px);
+            border-radius: 50%;
+            background: #e4e7ed;
+            transition: all 0.3s ease;
+        }
+        
+        .step-dot.active {
+            background: #409eff;
+            transform: scale(1.2);
+        }
+        
+        .step-dot.completed {
+            background: #67c23a;
+        }
+        
+        .step-text {
+            font-size: clamp(11px, 2.5vw, 14px);
+            color: #909399;
+            font-weight: 600;
+        }
+        
+        .step-text.active {
+            color: #409eff;
+            font-weight: 700;
+        }
+        
+        .step-text.completed {
+            color: #67c23a;
+        }
+    </style>
+</head>
+<body>
+    <div class="medical-app">
+        <div class="app-header">
+            <button class="back-btn" id="backBtn" onclick="app.goBack()" disabled>返回</button>
+            <span class="header-title">医疗沟通助手</span>
+            <div style="width: 80px;"></div>
+        </div>
+
+        <div class="sentence-display">
+            <div class="sentence-container">
+                <div class="sentence-text" id="sentenceText">请选择...</div>
+                <button class="speak-button" id="speakBtn" onclick="app.speak()">播放</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="button-grid" id="buttonGrid">
+                <!-- 按钮动态生成 -->
+            </div>
+        </div>
+
+        <div class="bottom-indicator">
+            <div class="progress-steps" id="progressSteps">
+                <!-- 进度动态生成 -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const DATA = {
+            templates: {
+                medical: (p, i, a) => a.includes('何时') ? `${i}${a}` : 
+                                     a.includes('哪里') ? `${i}在${a}` :
+                                     a.includes('如何') ? `${a}${i}` :
+                                     a === '需要' ? `${p}需要${i}` :
+                                     a === '不需要' ? `${p}不需要${i}` : `${p}${i}${a}`,
+                
+                housing: (p, i, a) => a.includes('何时') ? `${a}${i}` :
+                                      a.includes('哪里') ? `${i}在${a}` :
+                                      a.includes('如何') ? `${a}${i}` :
+                                      i === '床' && (a === '调高' || a === '调低') ? `${p}要${a}床` :
+                                      i === '空调' && (a === '升温' || a === '降温') ? `${p}要${a}` :
+                                      (a === '开窗帘' || a === '关窗帘' || a === '通风') ? `${p}要${a}` : `${p}要${a}${i}`,
+                
+                default: (p, i, a) => a.includes('何时') ? `${a}${i}` :
+                                      a.includes('哪里') ? `${i}在${a}` :
+                                      a.includes('如何') ? `${a}${i}` : `${p}要${a}${i}`
+            }
+        };
+        
+        const TREE_DATA = {
+            persons: ['我', '你', '他', '医生', '护士', '家人'],
+            categories: ['衣', '食', '住', '行', '医', '其他'],
+            items: {
+                '衣': {
+                    type: 'category',
+                    children: ['衣服', '裤子', '鞋子', '袜子', '帽子', '手套']
+                },
+                '食': {
+                    type: 'category', 
+                    children: ['饭', '菜', '汤', '药', '水', '茶']
+                },
+                '住': {
+                    type: 'category',
+                    children: ['灯', '空调', '床', '被子', '枕头', '窗户']
+                },
+                '行': {
+                    type: 'category',
+                    children: ['走路', '坐下', '站起', '轮椅', '拐杖', '搀扶']
+                },
+                '医': {
+                    type: 'category',
+                    children: ['体检', '护理', '住院', '疼痛', '不适', '检查']
+                },
+                '其他': {
+                    type: 'category',
+                    children: ['休息', '睡觉', '起床', '洗澡', '帮助']
+                },
+                
+                '体检': {
+                    type: 'parent',
+                    children: {
+                        '血液检查': {
+                            type: 'parent',
+                            children: ['采血', '血常规', '血生化', '血糖', '血脂']
+                        },
+                        '影像检查': {
+                            type: 'parent', 
+                            children: {
+                                'CT检查': {
+                                    type: 'parent',
+                                    children: ['头部CT', '胸部CT', '腹部CT', '全身CT']
+                                },
+                                '核磁检查': {
+                                    type: 'parent',
+                                    children: ['头部核磁', '脊椎核磁', '关节核磁', '腹部核磁']
+                                },
+                                'X光检查': {
+                                    type: 'parent',
+                                    children: ['胸片', '腹片', '骨片', '关节片']
+                                },
+                                '超声检查': {
+                                    type: 'parent',
+                                    children: ['腹部超声', '心脏超声', '血管超声', '甲状腺超声']
+                                }
+                            }
+                        },
+                        '功能检查': {
+                            type: 'parent',
+                            children: ['心电图', '脑电图', '肺功能', '听力检查', '视力检查']
+                        },
+                        '内镜检查': {
+                            type: 'parent',
+                            children: ['胃镜', '肠镜', '支气管镜', '膀胱镜']
+                        },
+                        '病理检查': {
+                            type: 'parent',
+                            children: ['活检', '细胞学', '免疫组化', '分子病理']
+                        }
+                    }
+                },
+                
+                '护理': {
+                    type: 'parent',
+                    children: {
+                        '基础护理': {
+                            type: 'parent',
+                            children: ['擦背', '翻身', '按摩', '清洁', '更衣']
+                        },
+                        '排泄护理': {
+                            type: 'parent',
+                            children: ['小便', '大便', '导尿', '灌肠', '造口护理']
+                        },
+                        '治疗护理': {
+                            type: 'parent',
+                            children: ['换药', '拆线', '引流', '造口', '伤口护理']
+                        },
+                        '输液护理': {
+                            type: 'parent',
+                            children: ['吊水', '打针', '输血', '化疗', '营养液']
+                        },
+                        '监测护理': {
+                            type: 'parent',
+                            children: ['量体温', '测血压', '测血糖', '测心率', '称体重']
+                        }
+                    }
+                },
+                
+                '住院': {
+                    type: 'parent',
+                    children: {
+                        '入院流程': {
+                            type: 'parent',
+                            children: ['办理入院', '安排床位', '入院检查', '病史采集', '入院宣教']
+                        },
+                        '住院管理': {
+                            type: 'parent',
+                            children: ['换病房', '转科', '请假', '陪护', '探视']
+                        },
+                        '出院流程': {
+                            type: 'parent',
+                            children: ['出院准备', '办理出院', '结算费用', '取药', '随访预约']
+                        }
+                    }
+                },
+                
+                '疼痛': {
+                    type: 'terminal',
+                    children: []
+                },
+                '不适': {
+                    type: 'terminal', 
+                    children: []
+                },
+                '检查': {
+                    type: 'terminal',
+                    children: []
+                }
+            }
+        };
+        
+        const ACTIONS = {
+            '衣服': ['穿', '脱', '洗', '换', '何时', '哪里'],
+            '裤子': ['穿', '脱', '洗', '换', '何时', '哪里'],
+            '鞋子': ['穿', '脱', '洗', '换', '何时', '哪里'],
+            '袜子': ['穿', '脱', '洗', '换', '何时', '哪里'],
+            '帽子': ['戴', '脱', '洗', '换', '何时', '哪里'],
+            '手套': ['戴', '脱', '洗', '换', '何时', '哪里'],
+            
+            '饭': ['吃', '要', '不要', '何时', '哪里', '好了'],
+            '菜': ['吃', '要', '不要', '何时', '哪里', '好了'],
+            '汤': ['喝', '要', '不要', '何时', '哪里', '好了'],
+            '药': ['吃', '要', '不要', '何时', '如何', '停'],
+            '水': ['喝', '要', '不要', '何时', '哪里', '好了'],
+            '茶': ['喝', '要', '不要', '何时', '哪里', '好了'],
+            
+            '灯': ['开', '关', '调亮', '调暗', '如何', '哪里'],
+            '空调': ['开', '关', '升温', '降温', '如何', '哪里'],
+            '床': ['调高', '调低', '调床头', '调床尾', '躺下', '起来'],
+            '被子': ['盖', '拿', '洗', '换', '何时', '哪里'],
+            '枕头': ['用', '换', '洗', '调节', '何时', '哪里'],
+            '窗户': ['开', '关', '开窗帘', '关窗帘', '通风', '如何'],
+            
+            '走路': ['要', '不要', '可以', '不行', '如何', '累了'],
+            '坐下': ['要', '不要', '可以', '不行', '如何', '累了'],
+            '站起': ['要', '不要', '可以', '不行', '如何', '累了'],
+            '轮椅': ['要', '不要', '推', '停', '如何', '哪里'],
+            '拐杖': ['要', '不要', '用', '放', '如何', '哪里'],
+            '搀扶': ['要', '不要', '可以', '不行', '如何', '累了'],
+            
+            '体检': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '护理': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '疼痛': ['好了', '还有', '很重', '轻微', '何时', '哪里'],
+            '不适': ['好了', '还有', '很重', '轻微', '何时', '哪里'],
+            '检查': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '采血': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '血常规': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '血生化': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '血糖': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '血脂': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '头部CT': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '胸部CT': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '腹部CT': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '全身CT': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '头部核磁': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '脊椎核磁': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '关节核磁': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '腹部核磁': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '胸片': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '腹片': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '骨片': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '关节片': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '腹部超声': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '心脏超声': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '血管超声': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '甲状腺超声': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '心电图': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '脑电图': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '肺功能': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '听力检查': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '视力检查': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '胃镜': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '肠镜': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '支气管镜': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '膀胱镜': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '活检': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '细胞学': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '免疫组化': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '分子病理': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '擦背': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '翻身': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '按摩': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '清洁': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '更衣': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '小便': ['要', '不要', '可以', '不行', '何时', '哪里'],
+            '大便': ['要', '不要', '可以', '不行', '何时', '哪里'],
+            '导尿': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '灌肠': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '造口护理': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '换药': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '拆线': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '引流': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '造口': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '伤口护理': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '吊水': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '打针': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '输血': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '化疗': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '营养液': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '量体温': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '测血压': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '测血糖': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '测心率': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '称体重': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '办理入院': ['要', '不要', '何时', '哪里', '如何', '好了'],
+            '安排床位': ['要', '不要', '何时', '哪里', '如何', '好了'],
+            '入院检查': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '病史采集': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            '入院宣教': ['需要', '不需要', '何时', '哪里', '如何', '好了'],
+            
+            '换病房': ['要', '不要', '何时', '哪里', '如何', '好了'],
+            '转科': ['要', '不要', '何时', '哪里', '如何', '好了'],
+            '请假': ['要', '不要', '何时', '哪里', '如何', '好了'],
+            '陪护': ['要', '不要', '何时', '哪里', '如何', '好了'],
+            '探视': ['要', '不要', '何时', '哪里', '如何', '好了'],
+            
+            '出院准备': ['要', '不要', '何时', '哪里', '如何', '好了'],
+            '办理出院': ['要', '不要', '何时', '哪里', '如何', '好了'],
+            '结算费用': ['要', '不要', '何时', '哪里', '如何', '好了'],
+            '取药': ['要', '不要', '何时', '哪里', '如何', '好了'],
+            '随访预约': ['要', '不要', '何时', '哪里', '如何', '好了'],
+            
+            '休息': ['要', '不要', '可以', '不行', '何时', '哪里'],
+            '睡觉': ['要', '不要', '可以', '不行', '何时', '哪里'],
+            '起床': ['要', '不要', '可以', '不行', '何时', '如何'],
+            '洗澡': ['要', '不要', '可以', '不行', '何时', '哪里'],
+            '帮助': ['要', '不要', '可以', '给', '何时', '如何'],
+            
+            default: ['要', '不要', '何时', '哪里', '如何', '好了']
+        };
+        
+        const app = {
+            level: 0,
+            path: [],
+            page: 0,
+            lastSentence: '',
+            hasSpoken: false,
+            
+            getCurrentOptions() {
+                if (this.level === 0) {
+                    return TREE_DATA.persons;
+                }
+                if (this.level === 1) {
+                    return TREE_DATA.categories;
+                }
+                
+                if (this.level === 2) {
+                    const category = this.path[1];
+                    const categoryData = TREE_DATA.items[category];
+                    
+                    if (categoryData && categoryData.children) {
+                        return Array.isArray(categoryData.children) ? 
+                               categoryData.children : 
+                               Object.keys(categoryData.children);
+                    }
+                    return [];
+                }
+                
+                const currentItem = this.path[this.level - 1];
+                const children = this.getChildren(currentItem);
+                
+                if (children && children.length > 0) {
+                    return children;
+                }
+                
+                const actions = ACTIONS[currentItem];
+                if (actions && actions.length > 0) {
+                    return actions;
+                }
+                
+                return ACTIONS.default || [];
+            },
+            
+            getChildren(item) {
+                return this.searchInTree(TREE_DATA.items, item);
+            },
+            
+            searchInTree(tree, targetItem) {
+                if (tree[targetItem]) {
+                    const item = tree[targetItem];
+                    if (item.children) {
+                        if (Array.isArray(item.children)) {
+                            return item.children;
+                        } else {
+                            return Object.keys(item.children);
+                        }
+                    }
+                    return null;
+                }
+                
+                for (const key in tree) {
+                    if (tree[key] && tree[key].children && typeof tree[key].children === 'object') {
+                        if (!Array.isArray(tree[key].children)) {
+                            const result = this.searchInTree(tree[key].children, targetItem);
+                            if (result) {
+                                return result;
+                            }
+                        }
+                    }
+                }
+                
+                return null;
+            },
+            
+            
+            getCurrentPageOptions() {
+                const options = this.getCurrentOptions();
+                const start = this.page * 6;
+                return options.slice(start, start + 6);
+            },
+            
+            select(value, index) {
+                this.path[this.level] = value;
+                this.showSelected(index);
+                this.updateSentence();
+                
+                const previousItem = this.level > 0 ? this.path[this.level - 1] : null;
+                
+                if (previousItem && ACTIONS[previousItem] && ACTIONS[previousItem].includes(value)) {
+                    this.complete();
+                    return;
+                }
+                
+                this.level++;
+                this.page = 0;
+                this.resetSpeakButton();
+                this.render();
+            },
+            
+            updateSentence() {
+                const parts = this.path.filter(Boolean);
+                let sentence = '请选择...';
+                
+                if (parts.length >= 4) {
+                    const person = parts[0];
+                    const category = parts[1];
+                    const action = parts[parts.length - 1];
+                    const item = parts[parts.length - 2];
+                    
+                    // 检查是否完成了选择（最后一个是动作）
+                    if (ACTIONS[item] && ACTIONS[item].includes(action)) {
+                        const template = DATA.templates[category] || DATA.templates.default;
+                        sentence = template(person, item, action);
+                    } else {
+                        sentence = parts.join('') + '...';
+                    }
+                } else if (parts.length > 0) {
+                    sentence = parts.join('') + '...';
+                }
+                
+                document.getElementById('sentenceText').textContent = sentence;
+            },
+            
+            
+            showSelected(index) {
+                const buttons = document.querySelectorAll('.main-btn');
+                buttons.forEach(btn => btn.classList.remove('selected'));
+                if (buttons[index]) {
+                    buttons[index].classList.add('selected');
+                }
+            },
+            
+            complete() {
+                const sentence = document.getElementById('sentenceText').textContent;
+                if (sentence && !sentence.includes('...')) {
+                    this.lastSentence = sentence;
+                    this.hasSpoken = true;
+                    this.speak();
+                    this.showRepeatButton();
+                }
+            },
+            
+            speak() {
+                const text = this.lastSentence || document.getElementById('sentenceText').textContent;
+                if (text && text !== '请选择...' && !text.includes('...')) {
+                    const speakBtn = document.getElementById('speakBtn');
+                    speakBtn.classList.add('completed');
+                    setTimeout(() => speakBtn.classList.remove('completed'), 1000);
+                    
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.lang = 'zh-CN';
+                        utterance.rate = 0.8;
+                        speechSynthesis.speak(utterance);
+                    }
+                }
+            },
+            
+            showRepeatButton() {
+                const speakBtn = document.getElementById('speakBtn');
+                speakBtn.textContent = '重复';
+                speakBtn.onclick = () => this.repeatLastSentence();
+            },
+            
+            repeatLastSentence() {
+                if (this.lastSentence) {
+                    document.getElementById('sentenceText').textContent = this.lastSentence;
+                    this.speak();
+                }
+            },
+            
+            goBack() {
+                if (this.level > 0) {
+                    this.level--;
+                    this.path = this.path.slice(0, this.level + 1);
+                    this.page = 0;
+                    this.updateSentence();
+                    this.resetSpeakButton();
+                    this.render();
+                }
+            },
+            
+            reset() {
+                this.level = 0;
+                this.path = [];
+                this.page = 0;
+                this.lastSentence = '';
+                this.hasSpoken = false;
+                document.getElementById('sentenceText').textContent = '请选择...';
+                this.resetSpeakButton();
+                this.render();
+            },
+            
+            resetSpeakButton() {
+                const speakBtn = document.getElementById('speakBtn');
+                speakBtn.textContent = '播放';
+                speakBtn.onclick = () => this.speak();
+            },
+            
+            prevPage() {
+                if (this.page > 0) {
+                    this.page--;
+                    this.render();
+                }
+            },
+            
+            nextPage() {
+                const options = this.getCurrentOptions();
+                if ((this.page + 1) * 6 < options.length) {
+                    this.page++;
+                    this.render();
+                }
+            },
+            
+            render() {
+                this.renderButtons();
+                this.renderProgress();
+                this.updateBackButton();
+            },
+            
+            renderButtons() {
+                const buttonGrid = document.getElementById('buttonGrid');
+                const options = this.getCurrentPageOptions();
+                const allOptions = this.getCurrentOptions();
+                
+                let html = '';
+                
+                // 主要按钮（6个）
+                for (let i = 0; i < 6; i++) {
+                    if (i < options.length) {
+                        html += `<button class="grid-button main-btn" onclick="app.select('${options[i]}', ${i})">${options[i]}</button>`;
+                    } else {
+                        html += `<div class="grid-button" style="visibility: hidden;"></div>`;
+                    }
+                }
+                
+                // 功能按钮
+                const canPrev = this.page > 0;
+                const canNext = (this.page + 1) * 6 < allOptions.length;
+                
+                html += `
+                    <button class="grid-button function-btn clear" onclick="app.reset()">清空</button>
+                    <button class="grid-button function-btn ${!canPrev ? 'disabled' : ''}" 
+                            onclick="app.prevPage()" ${!canPrev ? 'disabled' : ''}>上一页</button>
+                    <button class="grid-button function-btn ${!canNext ? 'disabled' : ''}" 
+                            onclick="app.nextPage()" ${!canNext ? 'disabled' : ''}>下一页</button>
+                `;
+                
+                buttonGrid.innerHTML = html;
+            },
+            
+            renderProgress() {
+                const progressSteps = document.getElementById('progressSteps');
+                const maxSteps = Math.max(4, this.level + 1);
+                const stepNames = ['人称', '类别', '项目'];
+                
+                // 动态添加细项步骤
+                for (let i = 3; i < maxSteps - 1; i++) {
+                    stepNames.push(`细项${i-2}`);
+                }
+                stepNames.push('动作');
+                
+                let html = '';
+                stepNames.forEach((name, index) => {
+                    const isCompleted = index < this.level;
+                    const isActive = index === this.level;
+                    
+                    html += `
+                        <div class="step">
+                            <div class="step-dot ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}"></div>
+                            <span class="step-text ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}">${name}</span>
+                        </div>
+                    `;
+                });
+                
+                progressSteps.innerHTML = html;
+            },
+            
+            updateBackButton() {
+                document.getElementById('backBtn').disabled = this.level === 0;
+            },
+            
+            init() {
+                this.render();
+            }
+        };
+        
+        app.init();
+    </script>
+</body>
+</html>

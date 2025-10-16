@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>语句逻辑分析器</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .title {
+            text-align: center;
+            color: #1976d2;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .analysis-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #1976d2;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+        
+        .sentence-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .sentence-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            border-left: 3px solid #28a745;
+        }
+        
+        .sentence-item.duplicate {
+            border-left-color: #ffc107;
+            background: #fff8e1;
+        }
+        
+        .sentence-item.illogical {
+            border-left-color: #dc3545;
+            background: #ffebee;
+        }
+        
+        .stats {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1976d2;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0 10px;
+            font-weight: 600;
+        }
+        
+        .btn:hover {
+            background: #1565c0;
+        }
+        
+        .btn.danger {
+            background: #dc3545;
+        }
+        
+        .btn.warning {
+            background: #ffc107;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">医疗沟通APP - 语句逻辑分析器</h1>
+        
+        <div class="controls">
+            <button class="btn" onclick="analyzeAllSentences()">分析所有语句</button>
+            <button class="btn warning" onclick="findDuplicates()">查找重复</button>
+            <button class="btn danger" onclick="findIllogical()">查找不合理</button>
+            <button class="btn" onclick="exportAnalysis()">导出分析</button>
+        </div>
+        
+        <div class="stats" id="statsSection">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalSentences">-</div>
+                    <div class="stat-label">总语句数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="logicalSentences">-</div>
+                    <div class="stat-label">合理语句</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="duplicateSentences">-</div>
+                    <div class="stat-label">重复语句</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="illogicalSentences">-</div>
+                    <div class="stat-label">不合理语句</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="analysis-section">
+            <div class="section-title">🔍 语句分析结果</div>
+            <div id="analysisResults">点击"分析所有语句"开始分析...</div>
+        </div>
+        
+        <div class="analysis-section">
+            <div class="section-title">⚠️ 不合理的语句组合</div>
+            <div id="illogicalResults">等待分析...</div>
+        </div>
+        
+        <div class="analysis-section">
+            <div class="section-title">🔄 重复的语句</div>
+            <div id="duplicateResults">等待分析...</div>
+        </div>
+        
+        <div class="analysis-section">
+            <div class="section-title">✅ 优化建议</div>
+            <div id="optimizationSuggestions">等待分析...</div>
+        </div>
+    </div>
+    
+    <script>
+        // 模拟APP的数据结构（简化版）
+        const appData = {
+            persons: ['我', '你', '他', '医生', '护士', '家人'],
+            categories: {
+                '衣': ['衣服', '裤子', '鞋子', '袜子', '被子', '枕头'],
+                '食': ['饭', '菜', '汤', '药', '水', '茶'],
+                '住': ['灯', '空调', '床', '被子', '温度', '窗户'],
+                '行': ['走路', '坐下', '站起', '轮椅', '拐杖', '搀扶'],
+                '医': ['体检', '住院', '护理', '疼痛', '不适', '检查'],
+                '其他': ['休息', '睡觉', '起床', '洗澡', '上厕所', '帮助']
+            },
+            actions: {
+                // 衣物动作
+                clothing: ['穿', '脱', '洗', '换', '整理', '收起'],
+                // 食物动作
+                food: ['吃', '喝', '要', '不要', '热', '做'],
+                // 电器动作
+                lighting: ['开', '关', '调亮', '调暗', '调亮度'],
+                air_conditioner: ['开', '关', '升温', '降温', '调温度', '换模式'],
+                bed: ['调高', '调低', '调床头', '调床尾', '躺下', '起来'],
+                window: ['开', '关', '开窗帘', '关窗帘', '通风'],
+                // 医疗动作
+                medical: ['需要', '不需要', '要', '不要', '好了', '疼'],
+                // 行动动作
+                mobility: ['需要帮助', '可以', '不行', '要', '不要', '累了'],
+                // 通用动作
+                common: ['需要', '不需要', '要', '不要', '好了', '还没']
+            },
+            itemActionMapping: {
+                '衣服': 'clothing', '裤子': 'clothing', '鞋子': 'clothing',
+                '饭': 'food', '菜': 'food', '汤': 'food', '药': 'food',
+                '灯': 'lighting', '空调': 'air_conditioner', '床': 'bed', '窗户': 'window',
+                '体检': 'medical', '护理': 'medical', '疼痛': 'medical',
+                '走路': 'mobility', '坐下': 'mobility', '轮椅': 'mobility',
+                '休息': 'common', '睡觉': 'common', '帮助': 'common'
+            }
+        };
+        
+        // 语句构建器
+        function buildSentence(person, category, item, action) {
+            // 根据不同组合生成句子
+            if (category === '医') {
+                if (action === '需要' || action === '要') {
+                    return `${person}需要${item}`;
+                } else if (action === '不需要' || action === '不要') {
+                    return `${person}不需要${item}`;
+                } else {
+                    return `${person}${item}${action}`;
+                }
+            } else if (category === '衣') {
+                return `${person}要${action}${item}`;
+            } else if (category === '食') {
+                if (action === '吃' || action === '喝') {
+                    return `${person}要${action}${item}`;
+                } else if (action === '要' || action === '不要') {
+                    return `${person}${action}${item}`;
+                } else {
+                    return `${person}要${action}${item}`;
+                }
+            } else if (category === '住') {
+                if (item === '床') {
+                    if (action === '调高' || action === '调低') {
+                        return `${person}要${action}床`;
+                    } else if (action === '调床头' || action === '调床尾') {
+                        return `${person}要${action}`;
+                    } else {
+                        return `${person}要${action}`;
+                    }
+                } else if (item === '灯') {
+                    return `${person}要${action}灯`;
+                } else if (item === '空调') {
+                    if (action === '升温' || action === '降温') {
+                        return `${person}要${action}`;
+                    } else {
+                        return `${person}要${action}空调`;
+                    }
+                } else if (item === '窗户') {
+                    if (action === '开窗帘' || action === '关窗帘' || action === '通风') {
+                        return `${person}要${action}`;
+                    } else {
+                        return `${person}要${action}窗户`;
+                    }
+                } else {
+                    return `${person}要${action}${item}`;
+                }
+            } else if (category === '行') {
+                if (action === '需要帮助' || action === '可以' || action === '不行' || action === '累了') {
+                    return `${person}${action}`;
+                } else {
+                    return `${person}要${action}`;
+                }
+            } else {
+                return `${person}要${action}${item}`;
+            }
+        }
+        
+        // 分析所有可能的语句
+        function analyzeAllSentences() {
+            const allSentences = [];
+            const duplicates = [];
+            const illogical = [];
+            const sentenceCount = {};
+            
+            // 生成所有可能的组合
+            appData.persons.forEach(person => {
+                Object.keys(appData.categories).forEach(category => {
+                    appData.categories[category].forEach(item => {
+                        const actionType = appData.itemActionMapping[item] || 'common';
+                        const actions = appData.actions[actionType] || appData.actions.common;
+                        
+                        actions.forEach(action => {
+                            const sentence = buildSentence(person, category, item, action);
+                            allSentences.push({
+                                person, category, item, action, sentence,
+                                path: `${person} → ${category} → ${item} → ${action}`
+                            });
+                            
+                            // 统计重复
+                            sentenceCount[sentence] = (sentenceCount[sentence] || 0) + 1;
+                        });
+                    });
+                });
+            });
+            
+            // 查找重复和不合理的组合
+            allSentences.forEach(item => {
+                if (sentenceCount[item.sentence] > 1) {
+                    duplicates.push(item);
+                }
+                
+                if (isIllogical(item)) {
+                    illogical.push(item);
+                }
+            });
+            
+            // 更新统计
+            document.getElementById('totalSentences').textContent = allSentences.length;
+            document.getElementById('logicalSentences').textContent = allSentences.length - illogical.length;
+            document.getElementById('duplicateSentences').textContent = Object.keys(sentenceCount).filter(s => sentenceCount[s] > 1).length;
+            document.getElementById('illogicalSentences').textContent = illogical.length;
+            
+            // 显示结果
+            displayAnalysisResults(allSentences);
+            displayIllogicalResults(illogical);
+            displayDuplicateResults(duplicates, sentenceCount);
+            generateOptimizationSuggestions(illogical, duplicates);
+            
+            return { allSentences, duplicates, illogical, sentenceCount };
+        }
+        
+        // 检查语句是否不合理
+        function isIllogical(item) {
+            const { person, category, item: itemName, action, sentence } = item;
+            
+            // 不合理的组合规则
+            const illogicalRules = [
+                // 医护人员不应该说自己疼痛
+                () => (person === '医生' || person === '护士') && (action === '疼' || action === '难受'),
+                
+                // 他人不应该直接控制别人的身体感受
+                () => person === '他' && (itemName === '疼痛' || itemName === '不适'),
+                
+                // 不合理的衣物动作
+                () => category === '衣' && itemName === '被子' && (action === '穿' || action === '脱'),
+                
+                // 不合理的食物动作
+                () => category === '食' && itemName === '水' && (action === '做' || action === '热'),
+                
+                // 不合理的设备控制
+                () => category === '住' && itemName === '温度' && (action === '穿' || action === '洗'),
+                
+                // 医生护士不应该说自己需要基本护理
+                () => (person === '医生' || person === '护士') && category === '医' && itemName === '护理' && action === '需要',
+                
+                // 不合理的行动组合
+                () => category === '行' && itemName === '轮椅' && person !== '我' && action === '累了',
+                
+                // 家人不应该直接操作医疗设备
+                () => person === '家人' && category === '医' && (itemName === '体检' || itemName === '检查') && action === '要',
+                
+                // 重复表达
+                () => sentence.includes('要要') || sentence.includes('需要需要'),
+                
+                // 语法不通顺
+                () => sentence.length < 3 || sentence.includes('undefined')
+            ];
+            
+            return illogicalRules.some(rule => rule());
+        }
+        
+        // 显示分析结果
+        function displayAnalysisResults(sentences) {
+            const results = document.getElementById('analysisResults');
+            const categories = {};
+            
+            sentences.forEach(item => {
+                if (!categories[item.category]) {
+                    categories[item.category] = [];
+                }
+                categories[item.category].push(item);
+            });
+            
+            let html = '';
+            Object.keys(categories).forEach(category => {
+                html += `<h4>${category}类 (${categories[category].length}个语句)</h4>`;
+                html += '<div class="sentence-list">';
+                categories[category].slice(0, 20).forEach(item => {
+                    const cssClass = isIllogical(item) ? 'illogical' : 'sentence-item';
+                    html += `<div class="${cssClass}">${item.sentence}</div>`;
+                });
+                if (categories[category].length > 20) {
+                    html += `<div class="sentence-item">... 还有${categories[category].length - 20}个语句</div>`;
+                }
+                html += '</div>';
+            });
+            
+            results.innerHTML = html;
+        }
+        
+        // 显示不合理结果
+        function displayIllogicalResults(illogical) {
+            const results = document.getElementById('illogicalResults');
+            
+            if (illogical.length === 0) {
+                results.innerHTML = '<div style="color: #28a745;">✅ 没有发现不合理的语句组合</div>';
+                return;
+            }
+            
+            let html = '<div class="sentence-list">';
+            illogical.forEach(item => {
+                html += `
+                    <div class="sentence-item illogical">
+                        <strong>${item.sentence}</strong><br>
+                        <small>路径: ${item.path}</small>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            results.innerHTML = html;
+        }
+        
+        // 显示重复结果
+        function displayDuplicateResults(duplicates, sentenceCount) {
+            const results = document.getElementById('duplicateResults');
+            
+            const uniqueDuplicates = {};
+            duplicates.forEach(item => {
+                if (sentenceCount[item.sentence] > 1) {
+                    if (!uniqueDuplicates[item.sentence]) {
+                        uniqueDuplicates[item.sentence] = [];
+                    }
+                    uniqueDuplicates[item.sentence].push(item);
+                }
+            });
+            
+            if (Object.keys(uniqueDuplicates).length === 0) {
+                results.innerHTML = '<div style="color: #28a745;">✅ 没有发现重复的语句</div>';
+                return;
+            }
+            
+            let html = '';
+            Object.keys(uniqueDuplicates).forEach(sentence => {
+                const items = uniqueDuplicates[sentence];
+                html += `
+                    <div class="sentence-item duplicate">
+                        <strong>${sentence}</strong> (${items.length}种路径)<br>
+                        <small>${items.map(item => item.path).join('<br>')}</small>
+                    </div>
+                `;
+            });
+            
+            results.innerHTML = html;
+        }
+        
+        // 生成优化建议
+        function generateOptimizationSuggestions(illogical, duplicates) {
+            const suggestions = document.getElementById('optimizationSuggestions');
+            
+            let html = '<ul>';
+            
+            // 基于不合理语句的建议
+            if (illogical.length > 0) {
+                html += '<li><strong>移除不合理组合：</strong>建议移除医护人员表达疼痛、他人控制别人感受等不合理组合</li>';
+            }
+            
+            // 基于重复语句的建议
+            if (duplicates.length > 0) {
+                html += '<li><strong>合并重复路径：</strong>多个操作路径生成相同句子时，可以合并为一个更直观的路径</li>';
+            }
+            
+            // 通用优化建议
+            html += '<li><strong>语句模板优化：</strong>为不同设备类型设计更自然的表达方式</li>';
+            html += '<li><strong>动作分组优化：</strong>将相似功能的动作归类，减少选择复杂度</li>';
+            html += '<li><strong>权限控制：</strong>根据人称限制某些不合适的动作选项</li>';
+            html += '<li><strong>情境感知：</strong>根据医院场景优化语句表达的自然度</li>';
+            
+            html += '</ul>';
+            
+            // 具体的优化建议
+            html += '<h4>具体优化方案：</h4>';
+            html += '<div class="sentence-list">';
+            
+            html += `
+                <div class="sentence-item">
+                    <strong>1. 人称权限控制</strong><br>
+                    限制医生/护士说"我疼痛"等不合理表达
+                </div>
+                <div class="sentence-item">
+                    <strong>2. 动作合理性检查</strong><br>
+                    如"被子"不应有"穿/脱"动作
+                </div>
+                <div class="sentence-item">
+                    <strong>3. 句式模板优化</strong><br>
+                    为设备控制设计更自然的表达
+                </div>
+                <div class="sentence-item">
+                    <strong>4. 重复路径合并</strong><br>
+                    多个路径生成相同句子时进行合并
+                </div>
+            `;
+            
+            html += '</div>';
+            suggestions.innerHTML = html;
+        }
+        
+        // 查找重复
+        function findDuplicates() {
+            const analysis = analyzeAllSentences();
+            console.log('重复语句分析:', analysis.duplicates);
+        }
+        
+        // 查找不合理
+        function findIllogical() {
+            const analysis = analyzeAllSentences();
+            console.log('不合理语句:', analysis.illogical);
+        }
+        
+        // 导出分析结果
+        function exportAnalysis() {
+            const analysis = analyzeAllSentences();
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                statistics: {
+                    total: analysis.allSentences.length,
+                    logical: analysis.allSentences.length - analysis.illogical.length,
+                    duplicates: Object.keys(analysis.sentenceCount).filter(s => analysis.sentenceCount[s] > 1).length,
+                    illogical: analysis.illogical.length
+                },
+                illogicalSentences: analysis.illogical,
+                duplicateSentences: analysis.duplicates,
+                allSentences: analysis.allSentences
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `sentence-analysis-${Date.now()}.json`;
+            link.click();
+        }
+        
+        // 页面加载时自动分析
+        window.addEventListener('load', () => {
+            setTimeout(analyzeAllSentences, 500);
+        });
+    </script>
+</body>
+</html>
