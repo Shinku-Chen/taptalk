@@ -6,6 +6,8 @@
 
 https://shinku-chen.github.io/taptalk/  应该是这个吧
 
+![qrcode.png](qrcode.png)
+
 # 项目信息
 用cursor编写的简单网页,,目前差不多基本完成
 实现了不能够说话患者通过点击按钮的对话实现
@@ -15,4 +17,4 @@ https://shinku-chen.github.io/taptalk/  应该是这个吧
 感觉端够用了
 
 
-![qrcode.png](qrcode.png)
+
