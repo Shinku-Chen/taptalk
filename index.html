@@ -771,6 +771,18 @@
             },
             
             
+            requestFullscreen() {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(err => {
+                        console.log('全屏请求失败:', err);
+                    });
+                } else if (elem.webkitRequestFullscreen) { // Safari
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { // IE11
+                    elem.msRequestFullscreen();
+                }
+            },
             
             init() {
                 this.render();
@@ -779,6 +791,20 @@
                 window.addEventListener('resize', () => {
                     this.adjustButtonFontSizes();
                 });
+                
+                // 尝试在页面加载后进入全屏
+                setTimeout(() => {
+                    this.requestFullscreen();
+                }, 100);
+                
+                // 如果自动全屏失败，在首次点击时进入全屏
+                let hasTriedFullscreen = false;
+                document.addEventListener('click', () => {
+                    if (!hasTriedFullscreen && !document.fullscreenElement) {
+                        hasTriedFullscreen = true;
+                        this.requestFullscreen();
+                    }
+                }, { once: true });
             }
         };
         
