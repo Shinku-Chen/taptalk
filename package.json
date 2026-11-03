@@ -1,0 +1,10 @@
+{
+    "name": "taptalk",
+    "version": "0.2.0",
+    "private": true,
+    "description": "面向无法说话患者的点击式沟通辅助网页",
+    "scripts": {
+        "test": "node --test",
+        "serve": "python3 -m http.server 8080"
+    }
+}
