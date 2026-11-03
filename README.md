@@ -145,7 +145,7 @@ say('害怕')                 // 我害怕
 say('休息', '{p}想{i}')     // 我想休息
 ~~~
 
-新增或修改数据后运行 <code>npm test</code>。如果改了静态资源，记得同步提升 <code>sw.js</code> 里的 <code>CACHE_VERSION</code>，否则已经安装过的设备可能继续使用旧缓存。
+新增或修改数据后运行 <code>npm test</code>。如果改了静态资源，记得同时提升 <code>index.html</code> 的资源版本参数、<code>sw.js</code> 的 <code>CACHE_VERSION</code> / <code>APP_SHELL</code> 和 <code>js/app.js</code> 的 <code>SERVICE_WORKER_URL</code>，否则已经安装过的设备可能继续使用旧缓存。
 
 ## 目录结构
 
