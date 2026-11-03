@@ -23,6 +23,6 @@
 - 词板数据：<code>js/data.js</code>
 - 句子生成与数据校验：<code>js/core.js</code>
 - 交互与存储：<code>js/app.js</code>
-- 自动化测试：<code>tests/core.test.js</code>
+- 自动化测试：<code>tests/</code>（词板逻辑 + 资源版本一致性）
 - 页面结构：<code>index.html</code>
 - 样式与主题：<code>css/app.css</code>

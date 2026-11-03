@@ -99,7 +99,7 @@ npm test
 node --test
 ~~~
 
-测试会校验词板数据完整性、常用语分页、组合句子生成，以及所有人物 × 类别 × 项目 × 动作组合不会出现“我要要”“我不不”“undefined”之类的异常文本。
+测试会校验词板数据完整性、常用语分页、组合句子生成、所有人物 × 类别 × 项目 × 动作组合不会出现“我要要”“我不不”“undefined”之类的异常文本，以及静态资源版本号是否同步。
 
 浏览器端建议至少手动走一遍：
 
@@ -155,7 +155,7 @@ css/app.css             布局、主题、高对比、响应式与动效
 js/data.js              词板数据（常用语、人物、类别、项目、动作）
 js/core.js              纯逻辑：分页、层级解析、句子生成、数据校验
 js/app.js               交互、语音、存储、设置、键盘与 PWA 注册
-tests/core.test.js      Node 内置测试
+tests/                  Node 内置测试（词板逻辑 + 资源版本一致性）
 assets/                 PWA 图标
 manifest.webmanifest    安装到桌面所需的 Web App Manifest
 sw.js                   离线缓存
