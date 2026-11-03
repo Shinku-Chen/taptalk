@@ -61,7 +61,7 @@ node --test
 - 按钮保持 3×3 布局：6 个内容位 + 清空 / 上一页 / 下一页 3 个功能位。顶部路径栏按钮在常用表达为“选择情景”，在组合表达为“返回上一级”。
 - 渲染用户输入（自定义常用语、历史记录、句子）必须使用 <code>textContent</code> 或 DOM API，禁止拼接 <code>innerHTML</code>。
 - localStorage 键名带版本后缀（当前 <code>taptalk.*.v1</code>）；修改结构时先做向后兼容的归一化，不要让旧数据导致页面初始化失败。
-- 修改静态资源后同步提升 <code>sw.js</code> 的 <code>CACHE_VERSION</code>，避免已安装设备继续使用旧缓存。
+- 修改静态资源后同步提升版本号：<code>index.html</code> 的资源查询参数、<code>sw.js</code> 的 <code>CACHE_VERSION</code> 与 <code>APP_SHELL</code>、<code>js/app.js</code> 的 <code>SERVICE_WORKER_URL</code> 必须一起更新，避免已安装设备继续使用旧缓存。
 - 保持无障碍：按钮使用真实 <code>button</code> 元素、焦点可见、句子区域有 <code>aria-live</code>、对比度足够、支持键盘操作。
 - 不引入分析、追踪、广告、远程字体或第三方脚本；句子、历史和自定义内容只留在本机。新增网络请求前先确认是否真的必要。
 - 本项目当前没有服务端、数据库或 Redis。如果未来引入缓存，默认设置 TTL，不允许长期缓存；如需例外，必须写清原因、风险和清理机制。

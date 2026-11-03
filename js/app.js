@@ -8,6 +8,7 @@
     }
 
     const prefix = (data.app && data.app.storagePrefix) || 'taptalk';
+    const SERVICE_WORKER_URL = 'sw.js?v=2';
     const STORAGE = {
         settings: prefix + '.settings.v1',
         history: prefix + '.history.v1',
@@ -1380,7 +1381,7 @@
             return;
         }
         window.addEventListener('load', function () {
-            navigator.serviceWorker.register('sw.js').catch(function () {
+            navigator.serviceWorker.register(SERVICE_WORKER_URL).catch(function () {
                 // 离线缓存失败不影响在线使用。
             });
         });
