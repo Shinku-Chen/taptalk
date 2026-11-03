@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'taptalk-v1';
+const CACHE_VERSION = 'taptalk-v2';
 const APP_SHELL = [
     './',
     './index.html',

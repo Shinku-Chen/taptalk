@@ -56,11 +56,17 @@
         <main class="main">
             <section class="sentence-card" aria-label="当前句子">
                 <div class="path-bar">
-                    <button class="back-btn" id="backBtn" type="button" aria-label="返回上一级">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <button class="back-btn is-scenario" id="backBtn" type="button" aria-label="选择情景">
+                        <svg class="nav-icon" id="backIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden>
                             <path d="m14 6-6 6 6 6"></path>
                         </svg>
-                        <span>返回</span>
+                        <svg class="nav-icon" id="scenarioIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="4" y="4" width="6" height="6" rx="1.5"></rect>
+                            <rect x="14" y="4" width="6" height="6" rx="1.5"></rect>
+                            <rect x="4" y="14" width="6" height="6" rx="1.5"></rect>
+                            <rect x="14" y="14" width="6" height="6" rx="1.5"></rect>
+                        </svg>
+                        <span id="backLabel">选择情景</span>
                     </button>
                     <div class="breadcrumb" id="breadcrumb" aria-label="当前选择路径"></div>
                     <span class="page-indicator" id="pageIndicator"></span>
@@ -207,7 +213,8 @@
                     <ul>
                         <li><strong>常用表达</strong>：点一下整句话，立即朗读，适合紧急和不方便多次点击时。</li>
                         <li><strong>组合表达</strong>：按“谁 → 类别 → 具体内容 → 动作”逐步选择，能组合出更多句子。</li>
-                        <li>说错了点“返回”退一步；点“清空”重新开始；点 🔊 可以重复朗读。</li>
+                        <li>常用表达点左上角“选择情景”可直接跳到任意情景，不必连续翻页。</li>
+                        <li>组合表达说错了点“返回”退一步；点“清空”重新开始；点 🔊 可以重复朗读。</li>
                         <li>点句子右侧的星标，可以把当前句子收藏进“我的常用语”。</li>
                     </ul>
                 </section>
@@ -234,6 +241,19 @@
                     <h3>重要提醒</h3>
                     <p>这是沟通辅助工具，不能替代医护判断。出现紧急情况时，请优先按呼叫铃或让身边的人呼叫医护人员。</p>
                 </section>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog class="dialog" id="scenarioDialog" aria-labelledby="scenarioTitle">
+        <div class="dialog-card">
+            <header class="dialog-head">
+                <h2 id="scenarioTitle">选择情景</h2>
+                <button class="icon-btn dialog-close" type="button" data-close="scenarioDialog" aria-label="关闭情景选择">×</button>
+            </header>
+            <div class="dialog-body">
+                <p class="note">按情景直接跳转，不必连续点击下一页。</p>
+                <div class="scenario-grid" id="scenarioList"></div>
             </div>
         </div>
     </dialog>

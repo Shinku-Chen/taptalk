@@ -72,6 +72,10 @@
     box-sizing: border-box;
 }
 
+svg[hidden] {
+    display: none;
+}
+
 html,
 body {
     height: 100%;
@@ -302,6 +306,24 @@ input:focus-visible {
 .back-btn svg {
     width: 18px;
     height: 18px;
+}
+
+.back-btn.is-scenario {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #ffffff;
+    box-shadow: var(--shadow-soft);
+}
+
+:root[data-theme="dark"] .back-btn.is-scenario {
+    color: #08101f;
+}
+
+:root[data-theme="contrast"] .back-btn.is-scenario {
+    background: #ffd400;
+    color: #000000;
+    border-color: #ffd400;
+    box-shadow: none;
 }
 
 .breadcrumb {
@@ -718,6 +740,19 @@ input:focus-visible {
     --tone-strong: #ffffff;
 }
 
+:root[data-theme="contrast"] .scenario-btn {
+    --tone: #ffffff;
+    --tone-soft: #000000;
+    --tone-strong: #ffffff;
+    border-color: #ffffff;
+}
+
+:root[data-theme="contrast"] .scenario-btn.is-current {
+    background: #ffd400;
+    color: #000000;
+    border-color: #000000;
+}
+
 :root[data-theme="contrast"] .sentence-card,
 :root[data-theme="contrast"] .mode-switch,
 :root[data-theme="contrast"] .icon-btn,
@@ -929,6 +964,69 @@ input:focus-visible {
     padding: 0;
     display: grid;
     gap: 8px;
+}
+
+.scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.scenario-btn {
+    min-height: 82px;
+    padding: 12px 14px;
+    border: 3px solid var(--tone, var(--line));
+    border-radius: var(--radius-sm);
+    background: var(--tone-soft, var(--surface-soft));
+    color: var(--tone-strong, var(--text));
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.scenario-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+}
+
+.scenario-btn.is-current {
+    box-shadow: inset 0 0 0 3px var(--tone-strong, var(--text));
+}
+
+.scenario-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.scenario-title {
+    font-size: clamp(16px, 1.8vw, 19px);
+    font-weight: 850;
+}
+
+.scenario-count {
+    flex: 0 0 auto;
+    color: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0.72;
+}
+
+.scenario-preview {
+    display: block;
+    margin-top: 6px;
+    color: inherit;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.45;
+    opacity: 0.78;
+}
+
+@media (min-width: 640px) {
+    .scenario-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }
 
 .custom-item,

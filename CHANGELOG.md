@@ -15,8 +15,10 @@
 
 - 将单文件页面拆分为 <code>index.html</code>、<code>css/app.css</code>、<code>js/data.js</code>、<code>js/core.js</code> 和 <code>js/app.js</code>，保留无构建、可静态部署的使用方式。
 - 重写 <code>README.md</code>，补充使用场景、患者/照顾者操作、词板扩展、目录结构、部署和已知限制。
-- 九宫格第三行固定为“清空 / 上一页 / 下一页”，返回上一级移到顶部路径栏。
+- 九宫格第三行固定为“清空 / 上一页 / 下一页”；顶部路径栏在常用表达提供“选择情景”，组合表达提供“返回上一级”。
+- 常用表达左上角新增“选择情景”，可直接跳转到任意情景，不再需要连续点击下一页。
 - 更新 <code>doc/需求文档.md</code>，写入当前实现范围；新增 <code>doc/README.md</code> 标注历史文档状态。
+- 提升 Service Worker 缓存版本，确保已安装设备能更新到新的情景选择界面。
 
 ### Fixed
 
