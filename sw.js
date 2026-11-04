@@ -1,12 +1,12 @@
-const CACHE_VERSION = 'taptalk-v2';
+const CACHE_VERSION = 'taptalk-v3';
 const APP_SHELL = [
     './',
     './index.html',
-    './css/app.css?v=2',
-    './js/data.js?v=2',
-    './js/core.js?v=2',
-    './js/app.js?v=2',
-    './manifest.webmanifest?v=2',
+    './css/app.css?v=3',
+    './js/data.js?v=3',
+    './js/core.js?v=3',
+    './js/app.js?v=3',
+    './manifest.webmanifest?v=3',
     './assets/icon.svg',
     './assets/icon-180.png',
     './assets/icon-192.png',

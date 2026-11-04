@@ -8,7 +8,7 @@
     }
 
     const prefix = (data.app && data.app.storagePrefix) || 'taptalk';
-    const SERVICE_WORKER_URL = 'sw.js?v=2';
+    const SERVICE_WORKER_URL = 'sw.js?v=3';
     const STORAGE = {
         settings: prefix + '.settings.v1',
         history: prefix + '.history.v1',
@@ -61,11 +61,10 @@
     function initElements() {
         [
             'modeQuick', 'modeCompose', 'historyBtn', 'settingsBtn',
-            'backBtn', 'backLabel', 'backIcon', 'scenarioIcon',
-            'breadcrumb', 'pageIndicator', 'sentenceText',
+            'backBtn', 'breadcrumb', 'pageIndicator', 'sentenceText',
             'speakBtn', 'favoriteBtn', 'hintText', 'buttonGrid',
-            'settingsDialog', 'historyDialog', 'helpDialog', 'scenarioDialog',
-            'scenarioList', 'toast',
+            'scenarioBarSection', 'scenarioBar',
+            'settingsDialog', 'historyDialog', 'helpDialog', 'toast',
             'themeSelect', 'fontSelect', 'speechEnabled', 'autoSpeak',
             'rateRange', 'rateValue', 'voiceSelect', 'speechNote',
             'hapticsToggle', 'wakeLockToggle', 'fullscreenBtn',
@@ -223,6 +222,7 @@
     function render() {
         const view = getView();
         renderModeTabs();
+        renderScenarioBar();
         renderBreadcrumb(view);
         renderSentence(view);
         renderPageIndicator(view);
@@ -337,65 +337,40 @@
     function renderNavButton() {
         const isQuick = state.mode === 'quick';
         const canGoBack = !isQuick && (state.composePath.length > 0 || Boolean(state.completed));
+        els.backBtn.hidden = isQuick;
         els.backBtn.disabled = !isQuick && !canGoBack;
-        els.backBtn.classList.toggle('is-scenario', isQuick);
-        els.backBtn.setAttribute('aria-label', isQuick ? '选择情景' : '返回上一级');
-        els.backLabel.textContent = isQuick ? '选择情景' : '返回';
-        if (isQuick) {
-            els.backIcon.setAttribute('hidden', '');
-            els.scenarioIcon.removeAttribute('hidden');
-        } else {
-            els.backIcon.removeAttribute('hidden');
-            els.scenarioIcon.setAttribute('hidden', '');
-        }
     }
 
-    function renderScenarioList() {
+    function renderScenarioBar() {
+        const isQuick = state.mode === 'quick';
+        els.scenarioBarSection.hidden = !isQuick;
+        if (!isQuick) {
+            return;
+        }
+
         const pages = getQuickPages();
-        els.scenarioList.replaceChildren();
+        els.scenarioBar.replaceChildren();
 
         pages.forEach(function (page, index) {
             const button = document.createElement('button');
             button.type = 'button';
-            button.className = 'scenario-btn tone-' + (page.tone || 'need') +
+            button.className = 'scenario-chip tone-' + (page.tone || 'need') +
                 (index === state.quickPage ? ' is-current' : '');
             button.setAttribute('aria-label', '选择情景：' + page.title);
             if (index === state.quickPage) {
                 button.setAttribute('aria-current', 'true');
             }
-
-            const top = document.createElement('span');
-            top.className = 'scenario-top';
-            const title = document.createElement('span');
-            title.className = 'scenario-title';
-            title.textContent = page.title;
-            const count = document.createElement('span');
-            count.className = 'scenario-count';
-            count.textContent = page.phrases.length + ' 句';
-            top.appendChild(title);
-            top.appendChild(count);
-
-            const preview = document.createElement('span');
-            preview.className = 'scenario-preview';
-            preview.textContent = page.phrases.slice(0, 3).map(function (phrase) {
-                return phrase.text;
-            }).join(' · ');
-
-            button.appendChild(top);
-            button.appendChild(preview);
+            button.textContent = page.title;
             button.addEventListener('click', function () {
                 selectScenario(index);
             });
-            els.scenarioList.appendChild(button);
+            els.scenarioBar.appendChild(button);
         });
-    }
 
-    function openScenarioPicker() {
-        if (state.mode !== 'quick') {
-            return;
+        const current = els.scenarioBar.querySelector('.scenario-chip.is-current');
+        if (current) {
+            current.scrollIntoView({ block: 'nearest', inline: 'center' });
         }
-        renderScenarioList();
-        openDialog('scenarioDialog');
     }
 
     function selectScenario(index) {
@@ -409,7 +384,6 @@
         haptic();
         state.completed = null;
         state.quickPage = index;
-        closeDialog('scenarioDialog');
         render();
     }
 
@@ -1218,7 +1192,10 @@
         if (event.key === 'Backspace') {
             event.preventDefault();
             if (state.mode === 'quick') {
-                openScenarioPicker();
+                const current = els.scenarioBar.querySelector('.scenario-chip.is-current');
+                if (current) {
+                    current.focus();
+                }
             } else {
                 goBack();
             }
@@ -1254,13 +1231,7 @@
         els.modeCompose.addEventListener('click', function () {
             switchMode('compose');
         });
-        els.backBtn.addEventListener('click', function () {
-            if (state.mode === 'quick') {
-                openScenarioPicker();
-            } else {
-                goBack();
-            }
-        });
+        els.backBtn.addEventListener('click', goBack);
         els.speakBtn.addEventListener('click', function () {
             if (state.speaking) {
                 stopSpeaking();
@@ -1284,7 +1255,7 @@
             });
         });
 
-        ['settingsDialog', 'historyDialog', 'helpDialog', 'scenarioDialog'].forEach(function (id) {
+        ['settingsDialog', 'historyDialog', 'helpDialog'].forEach(function (id) {
             const dialog = byId(id);
             if (!dialog) {
                 return;

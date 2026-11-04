@@ -58,7 +58,7 @@ node --test
 - 修改词板或句式时，同步更新 <code>tests/core.test.js</code>；测试应覆盖数据完整性、典型句子和全部动作组合。
 - 对不自解释的函数、数据结构字段和关键分支补简洁注释，说明职责、参数含义、边界和副作用。
 - 用户可见文案默认中文；代码标识符、API、类型名保留英文。注释和文档默认中文。
-- 按钮保持 3×3 布局：6 个内容位 + 清空 / 上一页 / 下一页 3 个功能位。顶部路径栏按钮在常用表达为“选择情景”，在组合表达为“返回上一级”。
+- 按钮保持 3×3 布局：6 个内容位 + 清空 / 上一页 / 下一页 3 个功能位。常用表达在句子上方常驻展开的情景栏；组合表达用顶部路径栏的“返回上一级”。
 - 渲染用户输入（自定义常用语、历史记录、句子）必须使用 <code>textContent</code> 或 DOM API，禁止拼接 <code>innerHTML</code>。
 - localStorage 键名带版本后缀（当前 <code>taptalk.*.v1</code>）；修改结构时先做向后兼容的归一化，不要让旧数据导致页面初始化失败。
 - 修改静态资源后同步提升版本号：<code>index.html</code> 的资源查询参数、<code>sw.js</code> 的 <code>CACHE_VERSION</code> 与 <code>APP_SHELL</code>、<code>js/app.js</code> 的 <code>SERVICE_WORKER_URL</code> 必须一起更新，避免已安装设备继续使用旧缓存。

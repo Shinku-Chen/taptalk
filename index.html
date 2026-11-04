@@ -9,10 +9,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="开口说">
     <title>医疗沟通助手 · 开口说</title>
-    <link rel="manifest" href="manifest.webmanifest?v=2">
+    <link rel="manifest" href="manifest.webmanifest?v=3">
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon-180.png">
-    <link rel="stylesheet" href="css/app.css?v=2">
+    <link rel="stylesheet" href="css/app.css?v=3">
 </head>
 <body>
     <div class="app">
@@ -56,17 +56,11 @@
         <main class="main">
             <section class="sentence-card" aria-label="当前句子">
                 <div class="path-bar">
-                    <button class="back-btn is-scenario" id="backBtn" type="button" aria-label="选择情景">
-                        <svg class="nav-icon" id="backIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden>
+                    <button class="back-btn" id="backBtn" type="button" aria-label="返回上一级" hidden>
+                        <svg class="nav-icon" id="backIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="m14 6-6 6 6 6"></path>
                         </svg>
-                        <svg class="nav-icon" id="scenarioIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <rect x="4" y="4" width="6" height="6" rx="1.5"></rect>
-                            <rect x="14" y="4" width="6" height="6" rx="1.5"></rect>
-                            <rect x="4" y="14" width="6" height="6" rx="1.5"></rect>
-                            <rect x="14" y="14" width="6" height="6" rx="1.5"></rect>
-                        </svg>
-                        <span id="backLabel">选择情景</span>
+                        <span id="backLabel">返回</span>
                     </button>
                     <div class="breadcrumb" id="breadcrumb" aria-label="当前选择路径"></div>
                     <span class="page-indicator" id="pageIndicator"></span>
@@ -90,6 +84,11 @@
                     </div>
                 </div>
                 <p class="hint-text" id="hintText">点击一句话，立即朗读</p>
+            </section>
+
+            <section class="scenario-bar" id="scenarioBarSection" aria-label="选择情景">
+                <span class="scenario-label" aria-hidden="true">情景</span>
+                <div class="scenario-scroll" id="scenarioBar" role="group" aria-label="选择情景"></div>
             </section>
 
             <section class="board" aria-label="沟通词板">
@@ -213,7 +212,7 @@
                     <ul>
                         <li><strong>常用表达</strong>：点一下整句话，立即朗读，适合紧急和不方便多次点击时。</li>
                         <li><strong>组合表达</strong>：按“谁 → 类别 → 具体内容 → 动作”逐步选择，能组合出更多句子。</li>
-                        <li>常用表达点左上角“选择情景”可直接跳到任意情景，不必连续翻页。</li>
+                        <li>常用表达上方会展开情景栏，可直接点任意情景，不必连续翻页。</li>
                         <li>组合表达说错了点“返回”退一步；点“清空”重新开始；点 🔊 可以重复朗读。</li>
                         <li>点句子右侧的星标，可以把当前句子收藏进“我的常用语”。</li>
                     </ul>
@@ -245,23 +244,10 @@
         </div>
     </dialog>
 
-    <dialog class="dialog" id="scenarioDialog" aria-labelledby="scenarioTitle">
-        <div class="dialog-card">
-            <header class="dialog-head">
-                <h2 id="scenarioTitle">选择情景</h2>
-                <button class="icon-btn dialog-close" type="button" data-close="scenarioDialog" aria-label="关闭情景选择">×</button>
-            </header>
-            <div class="dialog-body">
-                <p class="note">按情景直接跳转，不必连续点击下一页。</p>
-                <div class="scenario-grid" id="scenarioList"></div>
-            </div>
-        </div>
-    </dialog>
-
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <script src="js/data.js?v=2"></script>
-    <script src="js/core.js?v=2"></script>
-    <script src="js/app.js?v=2"></script>
+    <script src="js/data.js?v=3"></script>
+    <script src="js/core.js?v=3"></script>
+    <script src="js/app.js?v=3"></script>
 </body>
 </html>
